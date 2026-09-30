@@ -1,0 +1,37 @@
+# ============================================================
+# Proyecto de Minería de Datos - Equipo 13
+# Normalización de archivos para Git
+# ============================================================
+
+# Detectar automáticamente archivos de texto
+* text=auto
+
+
+# ------------------------------------------------------------
+# ARCHIVOS DE TEXTO
+# Mantener finales de línea LF de forma consistente
+# ------------------------------------------------------------
+
+*.md    text eol=lf
+*.txt   text eol=lf
+*.sql   text eol=lf
+*.csv   text eol=lf
+*.py    text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+
+
+# ------------------------------------------------------------
+# ARCHIVOS BINARIOS
+# ------------------------------------------------------------
+
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.pdf   binary
+*.pptx  binary
+*.xlsx  binary
+*.xls   binary
+*.twb   text eol=lf
+*.twbx  binary
