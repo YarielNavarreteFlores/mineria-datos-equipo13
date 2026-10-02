@@ -1698,8 +1698,9 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | `main` protegida | ✅ Configurada |
 | Colaboradores | ✅ Invitados |
 | Tag Práctica 1 | ✅ `practica-01-entregada` |
+| Tag Práctica 1 | ✅ `practica-01-entregada` |
 | Práctica 1 | ✅ Entregada |
-| Práctica 2 | 🟡 En desarrollo |
+| Práctica 2 | ✅ Entregada |
 | Comprensión del problema | ✅ Avanzada |
 | Comprensión de datos Metro | ✅ Avanzada |
 | ETL Metro | 🟡 En desarrollo / iteración |
