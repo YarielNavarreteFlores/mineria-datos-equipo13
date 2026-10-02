@@ -1,0 +1,4 @@
+archivo,capa,periodo,tamano_bytes,tamano_mib,sha256,registros_datos,columnas,observacion
+muestra200k_COVID19MEXICOLOC2022.csv,RAW,2022,686356922,654.56,0d063e5af6c4148acd8ebca6342559cfb32c3d88f8dc8950be87ba89c4afb703,3999996,41,Archivo recibido. Contiene dos copias byte a byte identicas.
+muestra200k_COVID19MEXICOLOC2022_trabajo.csv,WORKING,2022,343178461,327.28,9192b9abe85267252cb8ebaf0b2f6b3ea6e36bf0617eb70c3637a85d5946c782,1999998,41,Primera copia valida derivada del RAW sin modificar el original.
+muestra100k_COVID19MEXICOLOC2023.csv,RAW,2023,20258324,19.32,f3db9386cc2a437c54ba5b1e641e02016c7652c70fe4d04333b2d6673511f8f3,99999,44,Archivo fuente 2023.
