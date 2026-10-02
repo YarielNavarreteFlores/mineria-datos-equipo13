@@ -99,3 +99,10 @@ desktop.ini
 *.swp
 *~
 
+# ------------------------------------------------------------
+# ARCHIVOS PRACTICA 2
+# ------------------------------------------------------------
+practica02/data/raw/*.csv
+practica02/data/raw/*.rar
+practica02/data/raw/*.zip
+practica02/data/working/*.csv
