@@ -328,3 +328,180 @@ SELECT
             (SELECT COUNT(*) FROM covid_2023_tipada)
         )
     ) AS diferencia;
+
+/* =========================================================
+PUNTO 5.3 - AUDITORÍA DE DUPLICADOS
+   ========================================================= */
+
+/*Cuantos ID_REGISTRO estan repetidos*/
+WITH ids_repetidos AS (
+    SELECT
+        id_registro,
+        COUNT(*) AS apariciones
+    FROM covid_historica
+    WHERE id_registro IS NOT NULL
+    GROUP BY id_registro
+    HAVING COUNT(*) > 1
+)
+SELECT
+    COUNT(*) AS cantidad_ids_repetidos,
+    SUM(apariciones) AS filas_involucradas,
+    SUM(apariciones - 1) AS registros_excedentes,
+    MAX(apariciones) AS max_apariciones_id
+FROM ids_repetidos;
+
+/*Ver los casos con mayor repeticion*/
+SELECT
+    id_registro,
+    COUNT(*) AS apariciones,
+    MIN(fecha_actualizacion) AS primera_actualizacion,
+    MAX(fecha_actualizacion) AS ultima_actualizacion,
+    ARRAY_AGG(
+        DISTINCT anio_fuente
+        ORDER BY anio_fuente
+    ) AS anios_presentes
+FROM covid_historica
+WHERE id_registro IS NOT NULL
+GROUP BY id_registro
+HAVING COUNT(*) > 1
+ORDER BY
+    apariciones DESC,
+    id_registro
+LIMIT 20;
+
+/*Seperar repeticiones por periodo*/
+WITH resumen AS (
+    SELECT
+        id_registro,
+
+        COUNT(*) FILTER (
+            WHERE anio_fuente = 2022
+        ) AS apariciones_2022,
+
+        COUNT(*) FILTER (
+            WHERE anio_fuente = 2023
+        ) AS apariciones_2023
+
+    FROM covid_historica
+
+    WHERE id_registro IS NOT NULL
+
+    GROUP BY id_registro
+
+    HAVING COUNT(*) > 1
+)
+
+SELECT
+    COUNT(*) AS ids_repetidos_total,
+
+    COUNT(*) FILTER (
+        WHERE apariciones_2022 > 1
+    ) AS repetidos_dentro_2022,
+
+    COUNT(*) FILTER (
+        WHERE apariciones_2023 > 1
+    ) AS repetidos_dentro_2023,
+
+    COUNT(*) FILTER (
+        WHERE apariciones_2022 > 0
+        AND apariciones_2023 > 0
+    ) AS presentes_en_ambos_anios
+
+FROM resumen;
+
+/*Usar FECHA_ACTUALIZACION*/
+WITH id_fecha_repetidos AS (
+    SELECT
+        id_registro,
+        fecha_actualizacion,
+        COUNT(*) AS apariciones
+    FROM covid_historica
+    WHERE id_registro IS NOT NULL
+    GROUP BY
+        id_registro,
+        fecha_actualizacion
+    HAVING COUNT(*) > 1
+)
+
+SELECT
+    COUNT(*) AS grupos_id_fecha_repetidos,
+    SUM(apariciones) AS filas_involucradas,
+    SUM(apariciones - 1) AS registros_excedentes,
+    MAX(apariciones) AS max_apariciones
+FROM id_fecha_repetidos;
+
+
+/*Ver ejemplos de ID + fecha repetidos*/
+SELECT
+    id_registro,
+    fecha_actualizacion,
+    COUNT(*) AS apariciones,
+    ARRAY_AGG(
+        DISTINCT anio_fuente
+        ORDER BY anio_fuente
+    ) AS anios_presentes
+FROM covid_historica
+WHERE id_registro IS NOT NULL
+GROUP BY
+    id_registro,
+    fecha_actualizacion
+HAVING COUNT(*) > 1
+ORDER BY
+    apariciones DESC,
+    id_registro
+LIMIT 20;
+
+
+/*Comprobar duplicados exactos*/
+WITH candidatos AS (
+    SELECT
+        id_registro,
+        fecha_actualizacion
+    FROM covid_historica
+    WHERE id_registro IS NOT NULL
+    GROUP BY
+        id_registro,
+        fecha_actualizacion
+    HAVING COUNT(*) > 1
+),
+
+filas_firmadas AS (
+    SELECT
+        h.id_registro,
+        h.fecha_actualizacion,
+
+        MD5(
+            (
+                TO_JSONB(h)
+                - 'anio_fuente'
+                - 'archivo_fuente'
+            )::text
+        ) AS firma_fila
+
+    FROM covid_historica AS h
+
+    INNER JOIN candidatos AS c
+        ON h.id_registro = c.id_registro
+    AND h.fecha_actualizacion = c.fecha_actualizacion
+),
+
+duplicados_exactos AS (
+    SELECT
+        id_registro,
+        fecha_actualizacion,
+        firma_fila,
+        COUNT(*) AS apariciones
+    FROM filas_firmadas
+    GROUP BY
+        id_registro,
+        fecha_actualizacion,
+        firma_fila
+    HAVING COUNT(*) > 1
+)
+
+SELECT
+    COUNT(*) AS grupos_duplicados_exactos,
+    SUM(apariciones) AS filas_en_grupos_exactos,
+    SUM(apariciones - 1) AS duplicados_exactos_excedentes,
+    MAX(apariciones) AS max_apariciones_exactas
+FROM duplicados_exactos;
