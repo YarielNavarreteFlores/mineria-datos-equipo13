@@ -1,0 +1,3 @@
+﻿sistema,archivo,ruta_origen,tamano_bytes,tamano_mib,sha256,encoding_detectado,delimitador,numero_columnas,filas_datos,filas_malformadas,estado
+Metro,datos_metro_simple_raw.csv,practica01\01_Datos_Originales\datos_metro_simple_raw.csv,59917547,57.14,2D328EC615AE1249F3F6FA2896D66647409225B7D4419E78C6F78CCCD4B9F78A,utf-8-sig,"','",6,1180920,0,VALIDADO
+Metro,datos_metro_desglosada_raw.csv,practica01\01_Datos_Originales\datos_metro_desglosada_raw.csv,69892431,66.65,6A7C9030B3F87912C43A6ACA9D14BD36F4307647289C35E9D5248B14F7EF4405,utf-8-sig,"','",7,1192230,0,VALIDADO

@@ -1,0 +1,98 @@
+[
+  {
+    "archivo": "datos_metro_simple_raw.csv",
+    "ruta": "practica01\\01_Datos_Originales\\datos_metro_simple_raw.csv",
+    "tamano_bytes": 59917547,
+    "tamano_mib": 57.14,
+    "sha256": "2D328EC615AE1249F3F6FA2896D66647409225B7D4419E78C6F78CCCD4B9F78A",
+    "encoding_detectado": "utf-8-sig",
+    "delimitador": "','",
+    "numero_columnas": 6,
+    "encabezados": [
+      "fecha",
+      "anio",
+      "mes",
+      "linea",
+      "estacion",
+      "afluencia"
+    ],
+    "filas_datos": 1180920,
+    "filas_malformadas": 0,
+    "ejemplos": [
+      [
+        "2010-01-01",
+        "2010",
+        "Enero",
+        "Linea 1",
+        "Zaragoza",
+        "20227"
+      ],
+      [
+        "2010-01-01",
+        "2010",
+        "Enero",
+        "Linea 1",
+        "Isabel la CatÃ³lica",
+        "6487"
+      ],
+      [
+        "2010-01-01",
+        "2010",
+        "Enero",
+        "Linea 1",
+        "Moctezuma",
+        "10304"
+      ]
+    ]
+  },
+  {
+    "archivo": "datos_metro_desglosada_raw.csv",
+    "ruta": "practica01\\01_Datos_Originales\\datos_metro_desglosada_raw.csv",
+    "tamano_bytes": 69892431,
+    "tamano_mib": 66.65,
+    "sha256": "6A7C9030B3F87912C43A6ACA9D14BD36F4307647289C35E9D5248B14F7EF4405",
+    "encoding_detectado": "utf-8-sig",
+    "delimitador": "','",
+    "numero_columnas": 7,
+    "encabezados": [
+      "fecha",
+      "mes",
+      "anio",
+      "linea",
+      "estacion",
+      "tipo_pago",
+      "afluencia"
+    ],
+    "filas_datos": 1192230,
+    "filas_malformadas": 0,
+    "ejemplos": [
+      [
+        "2021-01-01",
+        "Enero",
+        "2021",
+        "LÃ­nea 1",
+        "Balbuena",
+        "Boleto",
+        "1848"
+      ],
+      [
+        "2021-01-01",
+        "Enero",
+        "2021",
+        "LÃ­nea 1",
+        "Balbuena",
+        "Prepago",
+        "790"
+      ],
+      [
+        "2021-01-01",
+        "Enero",
+        "2021",
+        "LÃ­nea 1",
+        "Balbuena",
+        "Gratuidad",
+        "325"
+      ]
+    ]
+  }
+]
