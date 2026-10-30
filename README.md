@@ -607,7 +607,7 @@ Debe actualizarse cada vez que exista una nueva práctica.
 | # | Práctica real asignada | Relación con proyecto semestral | Estado | Carpeta / evidencia |
 |---|---|---|---|---|
 | 1 | Definición del proyecto semestral | Directa | ✅ Entregada | `practica01/` |
-| 2 | En desarrollo — consultar instrucciones vigentes | Por determinar / en validación | 🟡 En desarrollo | `practica02/` |
+| 2 | Práctica 2 completada conforme a las instrucciones de la entrega | Relacionada con preparación, calidad, SQL y reproducibilidad| ✅ Entregada | `practica02/` |
 | 3 | Por definir | Por determinar | ⚪ Pendiente | — |
 | 4 | Por definir | Por determinar | ⚪ Pendiente | — |
 | 5 | Por definir | Por determinar | ⚪ Pendiente | — |
@@ -1698,7 +1698,7 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | `main` protegida | ✅ Configurada |
 | Colaboradores | ✅ Invitados |
 | Tag Práctica 1 | ✅ `practica-01-entregada` |
-| Tag Práctica 1 | ✅ `practica-01-entregada` |
+| Tag Práctica 2 | ✅ `practica-02-entregada` |
 | Práctica 1 | ✅ Entregada |
 | Práctica 2 | ✅ Entregada |
 | Comprensión del problema | ✅ Avanzada |
