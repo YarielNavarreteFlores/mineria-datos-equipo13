@@ -10,6 +10,23 @@ Equipo 13 — Licenciatura en Ciencia de Datos, ESCOM-IPN.
 
 El proyecto se encuentra en la fase de **Preparación de Datos de CRISP-DM**.
 
+### Estado de iteraciones
+
+| Sistema | RAW | Metadata | STAGING | Perfilado | TYPED | CLEAN | Validación | Contrato |
+|---|---|---|---|---|---|---|---|---|
+| Metro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Metrobús | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
+| RTP | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
+| Cablebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
+| Trolebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
+| Tren Ligero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
+
+**Leyenda**
+
+- ✅ Validado.
+- ⏳ Próxima iteración / en preparación.
+- ⚪ Pendiente.
+
 ### Iteración 1 — STC Metro
 
 Estado:

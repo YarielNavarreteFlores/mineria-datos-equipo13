@@ -28,6 +28,46 @@ Su objetivo es que cualquier integrante pueda responder, sin depender de mensaje
 
 Este README debe mantenerse actualizado durante todo el semestre. Si una instrucción del profesor cambia el alcance, una fuente de datos, una práctica, una técnica o un entregable, el cambio debe reflejarse aquí mediante un Pull Request.
 
+### Estado ejecutivo vigente
+
+**Proyecto:** Inteligencia de demanda de los principales sistemas de transporte público de la Ciudad de México.
+
+**Metodología principal:** CRISP-DM.
+
+**Estado actual:** preparación de datos multisistema.
+
+**Baseline validado:** STC Metro.
+
+**Pipeline vigente:**
+
+`RAW → STAGING → TYPED → CLEAN → VALIDACIÓN`
+
+**Metro:**
+
+- Metro Simple: 1,180,920 registros.
+- Metro Desglosada: 1,192,230 registros.
+- Pérdida entre STAGING, TYPED y CLEAN: 0 registros.
+- Mojibake residual después de CLEAN: 0.
+- 31 colisiones conocidas de granularidad en Metro Simple, correspondientes a Línea B — Oceanía durante diciembre de 2020.
+- 0 duplicados exactos asociados a dichas colisiones.
+- Pipeline validado mediante `proyecto/sql/quality/metro/06_validacion_metro.sql`.
+
+**Siguiente iteración:** Metrobús.
+
+**Estrategia de trabajo:** cada sistema debe completar comprensión de datos y preparación reproducible antes de integrarse a una capa analítica multisistema.
+
+Orden previsto:
+
+`Metro → Metrobús → checkpoint de compatibilidad → RTP → Cablebús → Trolebús → Tren Ligero → integración multisistema → modelo dimensional → OLAP → EDA consolidado → minería → evaluación`
+
+**Documentación vigente del proyecto:**
+
+- `proyecto/README.md`
+- `proyecto/docs/contrato_datos_metro.md`
+- `proyecto/docs/metro_fuentes_y_calidad.md`
+
+**Regla:** `practicaXX/` conserva entregables históricos; `proyecto/` contiene únicamente el producto semestral acumulativo y vigente.
+
 ---
 
 # 1. Contexto académico
@@ -42,7 +82,7 @@ Este README debe mantenerse actualizado durante todo el semestre. Si una instruc
 | Periodo del proyecto | 2026-B |
 | Equipo | Equipo 13 |
 | Repositorio | `mineria-datos-equipo13` |
-| Visibilidad | Privado |
+| Visibilidad | Público |
 | Rama estable | `main` |
 
 La Unidad de Aprendizaje busca implementar procesos de minería de datos utilizando modelos de datos, procesamiento analítico en línea y técnicas de minado. El proyecto semestral debe evolucionar desde la comprensión y preparación de los datos hasta la construcción, evaluación e interpretación de modelos.
@@ -520,7 +560,7 @@ practica-01-entregada
 
 > **Estado: ENTREGADA Y VALIDADA**
 
-La Práctica 2 se desarrolla desde el inicio con trazabilidad en Git/GitHub.
+La Práctica 2 se desarrolló con trazabilidad en Git/GitHub y se encuentra entregada y validada.
 
 Su estructura actual es:
 
@@ -537,20 +577,22 @@ practica02/
 │
 ├── sql/
 │   ├── README.md
-│   ├── postgresql/
-│   │   ├── 00_database.sql
-│   │   ├── 01_stage.sql
-│   │   ├── 02_ingesta.sql
-│   │   ├── 03_perfilado.sql
-│   │   ├── 04_tabla_tipada.sql
-│   │   ├── 05_consolidacion.sql
-│   │   ├── 06_calidad.sql
-│   │   ├── 07_eda.sql
-│   │   └── 08_validacion_final.sql
-│   │
-│   └── sqlserver/
+│   └── postgresql/
+│       ├── 00_database.sql
 │       ├── 01_stage.sql
-│       └── 02_ingesta.sql
+│       ├── 02_ingesta.sql
+│       ├── 03_perfilado.sql
+│       ├── 04_tabla_tipada.sql
+│       ├── 05_consolidacion.sql
+│       ├── 06_calidad.sql
+│       ├── 07_eda.sql
+│       └── 08_validacion_final.sql
+│
+├──scripts/
+│    ├── inspeccionar_fuentes.py
+│    ├── preparar_2022.py
+│    └── perfilar_fuentes.py
+│
 │
 ├── docs/
 │   ├── inspeccion_inicial.md
@@ -559,7 +601,9 @@ practica02/
 │   └── bitacora.md
 │
 ├── evidencias/
-│   └── README.md
+│    ├── Reporte_Practica_2_Equipo13.docx
+│    ├── Reporte_Practica_2_Equipo13.pdf
+│    └── README.md
 │
 └── reporte/
     └── README.md
@@ -1694,7 +1738,7 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | Componente | Estado |
 |---|---|
 | Repositorio Git local | ✅ Configurado |
-| Repositorio GitHub privado | ✅ Configurado |
+| Repositorio GitHub público | ✅ Configurado |
 | `main` protegida | ✅ Configurada |
 | Colaboradores | ✅ Invitados |
 | Tag Práctica 1 | ✅ `practica-01-entregada` |
@@ -1710,6 +1754,17 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | Evaluación | ⚪ Pendiente |
 | Entregables finales | ⚪ Pendiente |
 
+### Estado por sistema de transporte
+
+| Sistema | Comprensión | RAW | STAGING | TYPED | CLEAN | Validación | Contrato | Estado |
+|---|---|---|---|---|---|---|---|---|
+| Metro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Baseline validado |
+| Metrobús | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | Próxima iteración |
+| RTP | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | Pendiente |
+| Cablebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | Pendiente |
+| Trolebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | Pendiente |
+| Tren Ligero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | Pendiente |
+
 ---
 
 # 50. Roadmap semestral
@@ -1723,11 +1778,23 @@ Práctica 2
 Preparación / SQL / calidad / reproducibilidad
         │
         ▼
-ETL multisistema
-Metro + Metrobús + RTP + Cablebús + Trolebús + Tren Ligero
+Iteración 1 — Metro
+Baseline validado
         │
         ▼
-Homologación e integración
+Iteración 2 — Metrobús
+Comprensión + preparación + validación
+        │
+        ▼
+Checkpoint Metro ↔ Metrobús
+Compatibilidad semántica y granularidad común
+        │
+        ▼
+Iteraciones restantes
+RTP + Cablebús + Trolebús + Tren Ligero
+        │
+        ▼
+Homologación e integración multisistema
         │
         ▼
 Base histórica
