@@ -151,3 +151,168 @@ Los resultados completos se encuentran en:
 y:
 
 `data/metadata/metro/manifest_fuentes_metro.csv`
+
+## 7. Resultado del pipeline Metro
+
+El procesamiento del STC Metro quedó implementado mediante una arquitectura de cuatro capas:
+
+`RAW → STAGING → TYPED → CLEAN`
+
+Los archivos RAW originales se conservaron sin modificación y su identidad se verificó mediante SHA-256.
+
+### 7.1 Conciliación de registros
+
+Metro Simple:
+
+- RAW/manifest: 1,180,920 registros.
+- STAGING: 1,180,920 registros.
+- TYPED: 1,180,920 registros.
+- CLEAN: 1,180,920 registros.
+- Diferencia final: 0 registros.
+
+Metro Desglosada:
+
+- RAW/manifest: 1,192,230 registros.
+- STAGING: 1,192,230 registros.
+- TYPED: 1,192,230 registros.
+- CLEAN: 1,192,230 registros.
+- Diferencia final: 0 registros.
+
+Por lo tanto, las transformaciones realizadas no produjeron pérdida ni generación artificial de filas.
+
+---
+
+## 8. Corrección de representación textual
+
+Se detectó mojibake en variables como `linea` y `estacion`.
+
+La representación original se conservó en RAW, STAGING y TYPED. La corrección se aplicó únicamente en CLEAN.
+
+Registros donde fue necesario corregir texto:
+
+- Metro Simple: 495,537.
+- Metro Desglosada: 727,209.
+
+Después de la limpieza:
+
+- ocurrencias residuales de mojibake en `linea`: 0;
+- ocurrencias residuales de mojibake en `estacion`: 0.
+
+Las categorías de línea quedaron homologadas en 12 valores:
+
+- Línea 1
+- Línea 2
+- Línea 3
+- Línea 4
+- Línea 5
+- Línea 6
+- Línea 7
+- Línea 8
+- Línea 9
+- Línea 12
+- Línea A
+- Línea B
+
+---
+
+## 9. Modalidades de pago
+
+Metro Desglosada contiene tres modalidades:
+
+- Boleto
+- Gratuidad
+- Prepago
+
+Cada modalidad contiene 397,410 registros.
+
+No se detectaron categorías adicionales después de la limpieza.
+
+---
+
+## 10. Indicadores de calidad preservados
+
+Las anomalías estadísticas no fueron eliminadas. Se conservaron mediante banderas de calidad.
+
+### Metro Simple
+
+- afluencias iguales a cero: 62,025;
+- filas involucradas en colisiones de clave: 62;
+- posibles outliers globales mediante IQR: 66,361;
+- registros con texto corregido: 495,537.
+
+### Metro Desglosada
+
+- afluencias iguales a cero: 291,457;
+- filas involucradas en colisiones de clave: 0;
+- posibles outliers globales mediante IQR: 103,485;
+- registros con texto corregido: 727,209.
+
+Los valores cero y los posibles outliers se conservan porque su presencia no demuestra por sí misma un error de captura.
+
+---
+
+## 11. Investigación de colisiones de granularidad en Metro Simple
+
+La granularidad inicialmente esperada para Metro Simple es:
+
+`fecha + linea + estacion`
+
+Al auditar esta combinación se identificaron:
+
+- 31 grupos con colisión;
+- 62 filas involucradas;
+- 31 registros excedentes respecto de una fila por clave;
+- máximo de 2 filas por combinación.
+
+Los 31 grupos corresponden a:
+
+- Línea B;
+- estación Oceanía;
+- periodo del 1 al 31 de diciembre de 2020.
+
+Cada grupo contiene dos registros y ambos presentan valores de afluencia distintos.
+
+La comparación entre capas mostró:
+
+- TYPED: 31 grupos / 62 filas;
+- CLEAN: 31 grupos / 62 filas.
+
+Por lo tanto, las colisiones ya existían antes de la normalización textual y no fueron generadas por la capa CLEAN.
+
+Adicionalmente:
+
+- grupos de duplicados exactos: 0;
+- filas en duplicados exactos: 0;
+- duplicados exactos excedentes: 0.
+
+### Decisión
+
+No se eliminan ni fusionan estos registros.
+
+Con la información disponible no existe una variable adicional que permita determinar cuál de las dos afluencias representa el valor correcto o si ambas corresponden a una granularidad operativa no publicada en el archivo.
+
+Los registros se conservan y se identifican mediante `es_colision_clave = TRUE`.
+
+Esta decisión preserva la información original y evita introducir una deduplicación arbitraria.
+
+---
+
+## 12. Validación integral
+
+El script:
+
+`sql/quality/metro/06_validacion_metro.sql`
+
+verifica de forma automática:
+
+- conteos STAGING, TYPED y CLEAN;
+- conciliación de registros;
+- mojibake residual;
+- valores NULL en campos críticos;
+- coherencia temporal;
+- dominios principales;
+- indicadores de calidad.
+
+Todos los controles críticos terminaron con estado `OK`.
+
+Metro queda establecido como el primer pipeline de referencia del proyecto semestral.

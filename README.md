@@ -518,7 +518,7 @@ practica-01-entregada
 
 # 16. Práctica 2 — Estado operativo
 
-> **Estado: EN DESARROLLO**
+> **Estado: ENTREGADA Y VALIDADA**
 
 La Práctica 2 se desarrolla desde el inicio con trazabilidad en Git/GitHub.
 
@@ -1703,8 +1703,8 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | Práctica 2 | ✅ Entregada |
 | Comprensión del problema | ✅ Avanzada |
 | Comprensión de datos Metro | ✅ Avanzada |
-| ETL Metro | 🟡 En desarrollo / iteración |
-| Integración multisistema | ⚪ Pendiente |
+| ETL Metro | ✅ Baseline RAW → STAGING → TYPED → CLEAN validado |
+| Integración multisistema | 🟡 En desarrollo — próxima iteración Metrobús |
 | Modelo dimensional / OLAP | ⚪ Pendiente |
 | Modelado | ⚪ Pendiente |
 | Evaluación | ⚪ Pendiente |
