@@ -26,6 +26,7 @@
 
 !**/data/catalogos/*.csv
 !**/data/metadata/*.csv
+!**/data/metadata/**/*.csv
 !**/manifest_fuentes.csv
 
 # Diccionarios históricos de la Práctica 1
