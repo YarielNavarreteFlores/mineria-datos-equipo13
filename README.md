@@ -52,7 +52,21 @@ Este README debe mantenerse actualizado durante todo el semestre. Si una instruc
 - 0 duplicados exactos asociados a dichas colisiones.
 - Pipeline validado mediante `proyecto/sql/quality/metro/06_validacion_metro.sql`.
 
-**Siguiente iteración:** Metrobús.
+**Iteración activa:** Iteración 2 — Metrobús.
+
+Checkpoint local documentado el 2026-11-01:
+- Fuentes oficiales identificadas y descargadas.
+- Dos CSV RAW preservados y excluidos de Git.
+- Dos diccionarios oficiales conservados.
+- Integridad SHA-256 comprobada para los cuatro archivos.
+- Inspección estructural y lectura estricta completadas.
+- Manifest generado con estado INSPECCIONADO_PENDIENTE_VALIDACION.
+- STAGING, perfilado SQL, TYPED, CLEAN y validación pendientes.
+
+Contexto detallado para continuar:
+`proyecto/docs/checkpoint_metrobus.md`.
+
+Metro permanece como baseline validado.
 
 **Estrategia de trabajo:** cada sistema debe completar comprensión de datos y preparación reproducible antes de integrarse a una capa analítica multisistema.
 

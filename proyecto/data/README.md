@@ -125,11 +125,25 @@ Estado:
 
 ### Metrobús
 
-Estado:
+Estado: RAW adquirido e inspeccionado; preparación SQL pendiente.
 
-**Próxima iteración.**
+| Recurso | Registros | Columnas |
+|---|---:|---:|
+| Simple | 54,159 | 5 |
+| Desglosada | 29,386 | 6 |
 
-Su fuente todavía debe pasar por inspección, manifest, STAGING, perfilado, TYPED, CLEAN y validación antes de integrarse con Metro.
+Los archivos originales están en `raw/metrobus/`, excluidos de Git.
+Sus hashes se verificaron correctamente.
+
+Los metadatos, diccionarios y manifest están en `metadata/metrobus/`.
+
+La inspección no equivale a validación semántica:
+hay valores literales NaN en Simple y diferencias entre el
+esquema Desglosado y su diccionario oficial.
+
+STAGING, perfilado, TYPED, CLEAN y validación permanecen pendientes.
+
+Detalle: `../docs/checkpoint_metrobus.md`.
 
 ---
 

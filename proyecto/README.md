@@ -15,7 +15,7 @@ El proyecto se encuentra en la fase de **Preparación de Datos de CRISP-DM**.
 | Sistema | RAW | Metadata | STAGING | Perfilado | TYPED | CLEAN | Validación | Contrato |
 |---|---|---|---|---|---|---|---|---|
 | Metro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Metrobús | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
+| Metrobús | ✅ | En revisión | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
 | RTP | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
 | Cablebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
 | Trolebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
@@ -39,12 +39,21 @@ Flujo implementado:
 
 `RAW → STAGING → TYPED → CLEAN → VALIDACIÓN`
 
-### Próxima iteración
+### Iteración activa — Metrobús
 
-**Metrobús**
+Se completó la adquisición RAW, la verificación de integridad,
+la inspección estructural y la generación del manifest.
 
-La siguiente fuente será sometida al mismo proceso antes de evaluar su integración con Metro.
+- Simple: 54,159 registros y 5 columnas.
+- Desglosada: 29,386 registros y 6 columnas.
+- Ambos CSV: 0 filas con longitud incorrecta.
+- Diccionarios oficiales preservados: 2.
+- Estado del manifest: INSPECCIONADO_PENDIENTE_VALIDACION.
 
+La calidad semántica y la compatibilidad de los diccionarios
+siguen pendientes. No se ha creado ni cargado STAGING.
+
+Consultar `docs/checkpoint_metrobus.md` antes de continuar.
 ---
 
 ## Arquitectura
@@ -289,7 +298,7 @@ Solo después se evalúa compatibilidad con los sistemas existentes.
 
 ## Próximo objetivo
 
-### Iteración 2 — Metrobús
+### Continuación de la Iteración 2 — Metrobús
 
 Antes de integrar Metrobús se deberán determinar:
 

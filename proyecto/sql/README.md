@@ -201,7 +201,23 @@ Pérdida de registros:
 
 ---
 
-# Próxima iteración
+# Iteración activa - Metrobús
+
+Checkpoint 2026-11-01:
+
+La adquisición RAW, la inspección estructural y el manifest de
+Metrobús están completados. No se han creado ni cargado tablas
+STAGING de Metrobús en esta iteración.
+
+El siguiente trabajo es preparar scripts reproducibles de
+creación STAGING e ingestión, tomando como entrada los esquemas
+reales documentados en `../docs/checkpoint_metrobus.md`.
+
+La ingestión con \copy se ejecutará mediante psql desde terminal.
+DBeaver se utilizará para SQL compatible con PostgreSQL.
+
+El perfilado debe preceder a TYPED. No convertir automáticamente
+el literal NaN a cero ni imponer unicidad antes de comprobarla.
 
 Metrobús deberá incorporar su propio pipeline:
 

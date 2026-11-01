@@ -114,3 +114,29 @@ Una fuente no debe avanzar a integración multisistema hasta contar con:
 6. granularidad documentada;
 7. contrato de datos;
 8. validación del pipeline.
+
+## Checkpoint Metrobús — 2026-11-01
+
+Directorio: `metrobus/`.
+
+Archivos del checkpoint:
+
+- `procedencia_metrobus.md`
+- `checksums_fuentes_metrobus.sha256`
+- `inspeccion_fuentes_metrobus.json`
+- `manifest_fuentes_metrobus.csv`
+- `diccionario_metrobus_simple_original.csv`
+- `diccionario_metrobus_desglosada_original.csv`
+
+El manifest contiene cuatro fuentes: dos datasets y dos diccionarios.
+Todas tienen estado INSPECCIONADO_PENDIENTE_VALIDACION.
+
+Se verificaron conteos, estructura CSV y decodificación estricta
+con los decodificadores registrados. Esto no certifica la
+codificación original ni elimina problemas de mojibake.
+
+El generador compartido `proyecto/etl/generar_manifest.py` se
+actualizó para evitar declarar VALIDADO un archivo solo porque
+terminó la inspección. El manifest existente de Metro no se regeneró.
+
+Consultar `../../docs/checkpoint_metrobus.md`.
