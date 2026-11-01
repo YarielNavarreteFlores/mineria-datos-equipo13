@@ -52,7 +52,38 @@ Este README debe mantenerse actualizado durante todo el semestre. Si una instruc
 - 0 duplicados exactos asociados a dichas colisiones.
 - Pipeline validado mediante `proyecto/sql/quality/metro/06_validacion_metro.sql`.
 
-**Siguiente iteración:** Metrobús.
+**Iteración 2 — Metrobús: VALIDADA.**
+
+Metrobús completó su pipeline individual reproducible:
+
+`RAW → STAGING → PERFILADO → TYPED → CLEAN → VALIDACIÓN`
+
+Resultados principales:
+
+- Metrobús Simple: 54,159 registros.
+- Metrobús Desglosada: 29,386 registros.
+- Pérdida entre STAGING, TYPED y CLEAN: 0 registros.
+- Granularidad Simple validada: `fecha × linea`.
+- Granularidad Desglosada validada: `fecha × linea × tipo_pago`.
+- 0 duplicados exactos.
+- 0 colisiones de granularidad.
+- 17,227 valores `NaN` históricos en Simple, representados como `NULL` desde TYPED y marcados mediante `es_afluencia_no_disponible`.
+- 57 valores decimales preservados en cada recurso mediante `NUMERIC`.
+- 7 líneas lógicas homologadas.
+- 3,000 posibles outliers IQR en Simple y 1,090 en Desglosada; ninguno eliminado.
+- En el periodo común se validaron 14,693 claves `fecha × linea`, con 14,693 coincidencias exactas entre Simple y la suma de Desglosada.
+- Pipeline validado mediante `proyecto/sql/quality/metrobus/06_validacion_metrobus.sql`.
+
+Documentación:
+
+- `proyecto/docs/checkpoint_metrobus.md`
+- `proyecto/docs/contrato_datos_metrobus.md`
+
+Metro permanece como baseline validado.
+
+Metrobús todavía no se encuentra integrado físicamente con Metro.
+
+**Siguiente checkpoint:** evaluación de compatibilidad analítica Metro ↔ Metrobús.
 
 **Estrategia de trabajo:** cada sistema debe completar comprensión de datos y preparación reproducible antes de integrarse a una capa analítica multisistema.
 
@@ -65,6 +96,8 @@ Orden previsto:
 - `proyecto/README.md`
 - `proyecto/docs/contrato_datos_metro.md`
 - `proyecto/docs/metro_fuentes_y_calidad.md`
+- `proyecto/docs/contrato_datos_metrobus.md`
+- `proyecto/docs/checkpoint_metrobus.md`
 
 **Regla:** `practicaXX/` conserva entregables históricos; `proyecto/` contiene únicamente el producto semestral acumulativo y vigente.
 
@@ -209,13 +242,13 @@ Analizar y modelar los patrones históricos de demanda de los principales sistem
 
 El proyecto se plantea de forma incremental.
 
-### Primera iteración validada
+### Iteraciones individuales validadas
 
 - **STC Metro**
+- **Metrobús**
 
 ### Sistemas previstos para evaluación e integración posterior
 
-- Metrobús
 - RTP
 - Cablebús
 - Trolebús
@@ -255,7 +288,7 @@ El proyecto se organiza principalmente mediante **CRISP-DM**.
 | Fase | Propósito | Estado actual |
 |---|---|---|
 | 1. Comprensión del negocio/problema | Problema, pregunta, hipótesis, objetivos, alcance y criterios de éxito | **Avanzada** |
-| 2. Comprensión de los datos | Fuentes, volumen, cobertura, granularidad, diccionarios, perfilado y calidad | **Avanzada con Metro** |
+| 2. Comprensión de los datos | Fuentes, volumen, cobertura, granularidad, diccionarios, perfilado y calidad | **Avanzada con Metro y Metrobús** |
 | 3. Preparación de los datos | Ingesta, limpieza, homologación, integración, transformación y variables derivadas | **En desarrollo** |
 | 4. Modelado | Técnicas estadísticas, asociación, árboles, redes y modelos pertinentes | **Pendiente** |
 | 5. Evaluación | Métricas, validación, comparación, interpretación y limitaciones | **Pendiente** |
@@ -1747,8 +1780,11 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | Práctica 2 | ✅ Entregada |
 | Comprensión del problema | ✅ Avanzada |
 | Comprensión de datos Metro | ✅ Avanzada |
+| Comprensión de datos Metrobús | ✅ Avanzada |
 | ETL Metro | ✅ Baseline RAW → STAGING → TYPED → CLEAN validado |
-| Integración multisistema | 🟡 En desarrollo — próxima iteración Metrobús |
+| ETL Metrobús | ✅ RAW → STAGING → PERFILADO → TYPED → CLEAN → VALIDACIÓN |
+| Compatibilidad Metro ↔ Metrobús | 🟡 Siguiente checkpoint |
+| Integración multisistema | 🟡 En desarrollo |
 | Modelo dimensional / OLAP | ⚪ Pendiente |
 | Modelado | ⚪ Pendiente |
 | Evaluación | ⚪ Pendiente |
@@ -1759,7 +1795,7 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | Sistema | Comprensión | RAW | STAGING | TYPED | CLEAN | Validación | Contrato | Estado |
 |---|---|---|---|---|---|---|---|---|
 | Metro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Baseline validado |
-| Metrobús | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | Próxima iteración |
+| Metrobús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Pipeline individual validado |
 | RTP | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | Pendiente |
 | Cablebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | Pendiente |
 | Trolebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | Pendiente |

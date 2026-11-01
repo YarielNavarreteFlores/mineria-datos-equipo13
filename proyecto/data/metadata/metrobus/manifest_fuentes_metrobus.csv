@@ -1,0 +1,5 @@
+﻿sistema,archivo,ruta_origen,tamano_bytes,tamano_mib,sha256,encoding_detectado,delimitador,numero_columnas,filas_datos,filas_malformadas,estado
+metrobus,datos_metrobus_simple_raw.csv,proyecto\data\raw\metrobus\datos_metrobus_simple_raw.csv,2068083,1.97,EBED4323F91BD5D566B011FAD18E3578C0262781FEF5599ACBFC6B308810499D,utf-8-sig,"','",5,54159,0,INSPECCIONADO_PENDIENTE_VALIDACION
+metrobus,datos_metrobus_desglosada_raw.csv,proyecto\data\raw\metrobus\datos_metrobus_desglosada_raw.csv,1388641,1.32,CE8517D624C2564E1F6599FC49ED0910FA19E7E4FFEE47AED0377A109ED0D444,utf-8-sig,"','",6,29386,0,INSPECCIONADO_PENDIENTE_VALIDACION
+metrobus,diccionario_metrobus_simple_original.csv,proyecto\data\metadata\metrobus\diccionario_metrobus_simple_original.csv,948,0.0,B691DAC3753079A44CF644ED7641D8B2702180986881037C6CB380D30631015B,utf-8-sig,"','",9,5,0,INSPECCIONADO_PENDIENTE_VALIDACION
+metrobus,diccionario_metrobus_desglosada_original.csv,proyecto\data\metadata\metrobus\diccionario_metrobus_desglosada_original.csv,1703,0.0,583D5A0AAE040127D0820EE6C8EF0C4D3C3C8F7E6D7B5E894506448689441B9A,latin-1,"','",9,9,0,INSPECCIONADO_PENDIENTE_VALIDACION

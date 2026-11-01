@@ -127,9 +127,98 @@ Estado:
 
 Estado:
 
-**Próxima iteración.**
+**Pipeline individual validado.**
 
-Su fuente todavía debe pasar por inspección, manifest, STAGING, perfilado, TYPED, CLEAN y validación antes de integrarse con Metro.
+Fuentes:
+
+| Recurso | Registros | Columnas | Cobertura |
+|---|---:|---:|---|
+| Simple | 54,159 | 5 | 2005-07-26 a 2026-09-30 |
+| Desglosada | 29,386 | 6 | 2021-01-01 a 2026-09-30 |
+
+Pipeline:
+
+`RAW → STAGING → PERFILADO → TYPED → CLEAN → VALIDACIÓN`
+
+Conteos por capa:
+
+| Capa | Simple | Desglosada |
+|---|---:|---:|
+| STAGING | 54,159 | 29,386 |
+| TYPED | 54,159 | 29,386 |
+| CLEAN | 54,159 | 29,386 |
+
+Pérdida de registros:
+
+`0`
+
+Granularidades validadas:
+
+```text
+Simple:
+fecha × linea
+
+Desglosada:
+fecha × linea × tipo_pago
+```
+
+Hallazgos principales:
+
+- 17,227 literales `NaN` en Simple.
+- `NaN` no se interpreta como cero.
+- En TYPED/CLEAN se representa mediante `NULL`.
+- 57 valores decimales válidos preservados en cada recurso mediante `NUMERIC`.
+- 0 duplicados exactos.
+- 0 colisiones de granularidad.
+- 7 líneas lógicas después de homologación.
+- `Prepago` y `Gratuidad` como categorías de `tipo_pago`.
+- 3,000 posibles outliers IQR en Simple.
+- 1,090 posibles outliers IQR en Desglosada.
+- Ningún outlier fue eliminado.
+
+En el periodo común:
+
+```text
+2021-01-01 → 2026-09-30
+```
+
+se validaron:
+
+```text
+14,693 claves comparables
+14,693 coincidencias exactas
+0 diferencias
+```
+
+cumpliéndose:
+
+```text
+Simple.afluencia
+=
+SUM(Desglosada.afluencia)
+```
+
+para las claves comparables `fecha × linea`.
+
+Los archivos RAW continúan en:
+
+`raw/metrobus/`
+
+y permanecen excluidos de Git.
+
+Metadatos:
+
+`metadata/metrobus/`
+
+Contrato:
+
+`../docs/contrato_datos_metrobus.md`
+
+Checkpoint:
+
+`../docs/checkpoint_metrobus.md`
+
+Metrobús todavía no se encuentra integrado físicamente con Metro.
 
 ---
 

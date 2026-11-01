@@ -35,3 +35,7 @@
 *.xls   binary
 *.twb   text eol=lf
 *.twbx  binary
+
+# Preservar los bytes de los diccionarios oficiales de Metrobús
+proyecto/data/metadata/metrobus/diccionario_metrobus_simple_original.csv -text
+proyecto/data/metadata/metrobus/diccionario_metrobus_desglosada_original.csv -text

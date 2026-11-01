@@ -15,7 +15,7 @@ El proyecto se encuentra en la fase de **Preparación de Datos de CRISP-DM**.
 | Sistema | RAW | Metadata | STAGING | Perfilado | TYPED | CLEAN | Validación | Contrato |
 |---|---|---|---|---|---|---|---|---|
 | Metro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Metrobús | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
+| Metrobús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | RTP | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
 | Cablebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
 | Trolebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
@@ -39,12 +39,43 @@ Flujo implementado:
 
 `RAW → STAGING → TYPED → CLEAN → VALIDACIÓN`
 
-### Próxima iteración
+### Iteración 2 — Metrobús
 
-**Metrobús**
+Estado:
 
-La siguiente fuente será sometida al mismo proceso antes de evaluar su integración con Metro.
+**VALIDADA**
 
+Metrobús completó su pipeline individual reproducible:
+
+`RAW → STAGING → PERFILADO → TYPED → CLEAN → VALIDACIÓN`
+
+Resultados principales:
+
+- Simple: 54,159 registros.
+- Desglosada: 29,386 registros.
+- Pérdida entre STAGING, TYPED y CLEAN: 0 registros.
+- Granularidad Simple validada: `fecha × linea`.
+- Granularidad Desglosada validada: `fecha × linea × tipo_pago`.
+- 0 duplicados exactos.
+- 0 colisiones de granularidad.
+- 17,227 valores `NaN` históricos de Simple interpretados como información no disponible y representados como `NULL` desde TYPED.
+- 57 valores decimales preservados en cada recurso mediante `NUMERIC`.
+- 7 líneas lógicas homologadas.
+- Tipos de pago: `Prepago` y `Gratuidad`.
+- 3,000 posibles outliers IQR en Simple y 1,090 en Desglosada; ninguno eliminado.
+- En el periodo común se comprobaron 14,693 claves `fecha × linea`, con 14,693 coincidencias exactas entre Simple y la suma de Desglosada.
+
+Contrato:
+
+`docs/contrato_datos_metrobus.md`
+
+Checkpoint:
+
+`docs/checkpoint_metrobus.md`
+
+Metrobús todavía no está integrado físicamente con Metro.
+
+El siguiente trabajo es evaluar formalmente la compatibilidad analítica entre ambos sistemas antes de diseñar la capa multisistema.
 ---
 
 ## Arquitectura
@@ -289,7 +320,7 @@ Solo después se evalúa compatibilidad con los sistemas existentes.
 
 ## Próximo objetivo
 
-### Iteración 2 — Metrobús
+### Continuación de la Iteración 2 — Metrobús
 
 Antes de integrar Metrobús se deberán determinar:
 
