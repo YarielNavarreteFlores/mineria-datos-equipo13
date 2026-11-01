@@ -15,7 +15,7 @@ El proyecto se encuentra en la fase de **Preparación de Datos de CRISP-DM**.
 | Sistema | RAW | Metadata | STAGING | Perfilado | TYPED | CLEAN | Validación | Contrato |
 |---|---|---|---|---|---|---|---|---|
 | Metro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Metrobús | ✅ | En revisión | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ | ⏳ |
+| Metrobús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | RTP | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
 | Cablebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
 | Trolebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
@@ -39,21 +39,43 @@ Flujo implementado:
 
 `RAW → STAGING → TYPED → CLEAN → VALIDACIÓN`
 
-### Iteración activa — Metrobús
+### Iteración 2 — Metrobús
 
-Se completó la adquisición RAW, la verificación de integridad,
-la inspección estructural y la generación del manifest.
+Estado:
 
-- Simple: 54,159 registros y 5 columnas.
-- Desglosada: 29,386 registros y 6 columnas.
-- Ambos CSV: 0 filas con longitud incorrecta.
-- Diccionarios oficiales preservados: 2.
-- Estado del manifest: INSPECCIONADO_PENDIENTE_VALIDACION.
+**VALIDADA**
 
-La calidad semántica y la compatibilidad de los diccionarios
-siguen pendientes. No se ha creado ni cargado STAGING.
+Metrobús completó su pipeline individual reproducible:
 
-Consultar `docs/checkpoint_metrobus.md` antes de continuar.
+`RAW → STAGING → PERFILADO → TYPED → CLEAN → VALIDACIÓN`
+
+Resultados principales:
+
+- Simple: 54,159 registros.
+- Desglosada: 29,386 registros.
+- Pérdida entre STAGING, TYPED y CLEAN: 0 registros.
+- Granularidad Simple validada: `fecha × linea`.
+- Granularidad Desglosada validada: `fecha × linea × tipo_pago`.
+- 0 duplicados exactos.
+- 0 colisiones de granularidad.
+- 17,227 valores `NaN` históricos de Simple interpretados como información no disponible y representados como `NULL` desde TYPED.
+- 57 valores decimales preservados en cada recurso mediante `NUMERIC`.
+- 7 líneas lógicas homologadas.
+- Tipos de pago: `Prepago` y `Gratuidad`.
+- 3,000 posibles outliers IQR en Simple y 1,090 en Desglosada; ninguno eliminado.
+- En el periodo común se comprobaron 14,693 claves `fecha × linea`, con 14,693 coincidencias exactas entre Simple y la suma de Desglosada.
+
+Contrato:
+
+`docs/contrato_datos_metrobus.md`
+
+Checkpoint:
+
+`docs/checkpoint_metrobus.md`
+
+Metrobús todavía no está integrado físicamente con Metro.
+
+El siguiente trabajo es evaluar formalmente la compatibilidad analítica entre ambos sistemas antes de diseñar la capa multisistema.
 ---
 
 ## Arquitectura

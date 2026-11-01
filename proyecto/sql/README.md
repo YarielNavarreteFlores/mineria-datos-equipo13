@@ -201,25 +201,9 @@ Pérdida de registros:
 
 ---
 
-# Iteración activa - Metrobús
+# Pipeline validado — Metrobús
 
-Checkpoint 2026-11-01:
-
-La adquisición RAW, la inspección estructural y el manifest de
-Metrobús están completados. No se han creado ni cargado tablas
-STAGING de Metrobús en esta iteración.
-
-El siguiente trabajo es preparar scripts reproducibles de
-creación STAGING e ingestión, tomando como entrada los esquemas
-reales documentados en `../docs/checkpoint_metrobus.md`.
-
-La ingestión con \copy se ejecutará mediante psql desde terminal.
-DBeaver se utilizará para SQL compatible con PostgreSQL.
-
-El perfilado debe preceder a TYPED. No convertir automáticamente
-el literal NaN a cero ni imponer unicidad antes de comprobarla.
-
-Metrobús deberá incorporar su propio pipeline:
+La Iteración 2 de Metrobús completó su pipeline individual:
 
 ```text
 STAGING
@@ -233,4 +217,241 @@ CLEAN
 VALIDACIÓN
 ```
 
-Solo después se evaluará su compatibilidad semántica con Metro.
+## Orden de ejecución
+
+### 1. Crear STAGING
+
+```text
+ingestion/metrobus/01_stage_metrobus.sql
+```
+
+Estructuras recibidas:
+
+```text
+Simple:
+fecha, anio, mes, linea, afluencia
+
+Desglosada:
+fecha, mes, anio, linea, tipo_pago, afluencia
+```
+
+Todas las columnas se reciben inicialmente como `TEXT`.
+
+### 2. Ingestar RAW
+
+```text
+ingestion/metrobus/02_ingesta_metrobus.sql
+```
+
+Se ejecuta mediante `psql` y `\copy`.
+
+Conteos:
+
+```text
+Simple:       54,159
+Desglosada:   29,386
+```
+
+Diferencia contra manifest:
+
+`0`
+
+### 3. Perfilar
+
+```text
+quality/metrobus/03_perfilado_metrobus.sql
+```
+
+El perfilado determinó, entre otros:
+
+- cobertura temporal;
+- granularidad;
+- convertibilidad;
+- dominios;
+- valores `NaN`;
+- valores decimales;
+- duplicados;
+- colisiones;
+- variantes de línea;
+- outliers;
+- relación Simple ↔ Desglosada.
+
+Granularidades validadas:
+
+```text
+Simple:
+fecha × linea
+
+Desglosada:
+fecha × linea × tipo_pago
+```
+
+### 4. Construir TYPED
+
+```text
+integration/metrobus/04_typed_metrobus.sql
+```
+
+Conversiones principales:
+
+```text
+fecha      → DATE
+anio       → SMALLINT
+afluencia  → NUMERIC
+```
+
+En Simple:
+
+```text
+NaN → NULL
+```
+
+`NaN` no se transforma a cero.
+
+Se preservan 57 valores decimales válidos en cada recurso.
+
+### 5. Construir CLEAN
+
+```text
+integration/metrobus/05_clean_metrobus.sql
+```
+
+Incluye:
+
+- homologación de línea;
+- variables temporales;
+- bandera de afluencia no disponible;
+- bandera de afluencia cero;
+- bandera de colisión;
+- bandera de outlier IQR;
+- bandera de línea homologada.
+
+Dominio de líneas:
+
+```text
+Línea 1
+Línea 2
+Línea 3
+Línea 4
+Línea 5
+Línea 6
+Línea 7
+```
+
+Outliers IQR preservados:
+
+```text
+Simple:       3,000
+Desglosada:   1,090
+```
+
+### 6. Validar
+
+```text
+quality/metrobus/06_validacion_metrobus.sql
+```
+
+Resultado:
+
+**VALIDACIÓN METROBÚS OK**
+
+Conteos:
+
+| Capa | Simple | Desglosada |
+|---|---:|---:|
+| STAGING | 54,159 | 29,386 |
+| TYPED | 54,159 | 29,386 |
+| CLEAN | 54,159 | 29,386 |
+
+Pérdida:
+
+`0`
+
+Duplicados exactos:
+
+`0 / 0`
+
+Colisiones:
+
+`0 / 0`
+
+Valores `NaN` originales de Simple:
+
+`17,227`
+
+Valores decimales preservados:
+
+`57 / 57`
+
+Líneas lógicas:
+
+`7 / 7`
+
+## Reconciliación Simple ↔ Desglosada
+
+Periodo común:
+
+```text
+2021-01-01 → 2026-09-30
+```
+
+Para Desglosada se utiliza:
+
+```text
+SUM(afluencia)
+GROUP BY fecha, linea
+```
+
+Resultado:
+
+```text
+Claves comparables:       14,693
+Coincidencias exactas:    14,693
+Diferencias:                   0
+```
+
+Por tanto, en las claves comparables:
+
+```text
+Simple.afluencia
+=
+SUM(Desglosada.afluencia)
+```
+
+La medida es compatible en el periodo validado, pero los recursos
+mantienen granularidades distintas y no deben concatenarse
+directamente.
+
+Contrato:
+
+`../docs/contrato_datos_metrobus.md`
+
+Checkpoint:
+
+`../docs/checkpoint_metrobus.md`
+
+---
+
+# Siguiente bloque del proyecto
+
+Con Metro y Metrobús validados individualmente, el siguiente trabajo es:
+
+```text
+CHECKPOINT DE COMPATIBILIDAD
+Metro ↔ Metrobús
+```
+
+Antes de construir una capa multisistema se deberá estudiar:
+
+- granularidad común;
+- cobertura temporal;
+- dimensiones compartidas;
+- definición de afluencia;
+- ausencia de estación en Metrobús;
+- disponibilidad de `tipo_pago`;
+- estructura de líneas;
+- nivel de agregación compatible;
+- diseño de una futura tabla de hechos y dimensiones.
+
+No debe implementarse una unión física definitiva antes de completar
+este análisis.

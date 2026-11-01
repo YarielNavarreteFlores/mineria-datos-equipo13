@@ -140,3 +140,49 @@ actualizó para evitar declarar VALIDADO un archivo solo porque
 terminó la inspección. El manifest existente de Metro no se regeneró.
 
 Consultar `../../docs/checkpoint_metrobus.md`.
+
+### Estado posterior del pipeline
+
+Después de generar el manifest se completó el pipeline individual de
+Metrobús:
+
+```text
+STAGING
+↓
+PERFILADO
+↓
+TYPED
+↓
+CLEAN
+↓
+VALIDACIÓN
+```
+
+Resultado:
+
+**PIPELINE METROBÚS VALIDADO**
+
+El estado `INSPECCIONADO_PENDIENTE_VALIDACION` conservado en
+`manifest_fuentes_metrobus.csv` representa el estado del archivo en
+el momento de su generación y no se modifica retrospectivamente.
+
+La validación final se documenta mediante:
+
+- `../../sql/quality/metrobus/06_validacion_metrobus.sql`
+- `../../docs/contrato_datos_metrobus.md`
+- `../../docs/checkpoint_metrobus.md`
+
+Resultados principales:
+
+- Simple: 54,159 registros.
+- Desglosada: 29,386 registros.
+- Pérdida entre STAGING, TYPED y CLEAN: 0.
+- 0 duplicados exactos.
+- 0 colisiones de granularidad.
+- 17,227 `NaN` históricos en Simple.
+- 57 valores decimales preservados en cada recurso.
+- 7 líneas lógicas homologadas.
+- 14,693 de 14,693 claves comparables Simple ↔ Desglosada coinciden exactamente.
+
+Metrobús cumple actualmente la regla de aceptación individual de
+fuentes. Su integración multisistema permanece pendiente.
