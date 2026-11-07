@@ -38,21 +38,24 @@ Este README debe mantenerse actualizado durante todo el semestre. Si una instruc
 
 **Baseline validado:** STC Metro.
 
-**Pipeline vigente:**
+**Pipeline vigente por sistema:**
 
-`RAW → STAGING → TYPED → CLEAN → VALIDACIÓN`
+`RAW → STAGING → PERFILADO → TYPED → CLEAN → VALIDACIÓN`
 
-**Metro:**
+### Metro
 
 - Metro Simple: 1,180,920 registros.
 - Metro Desglosada: 1,192,230 registros.
 - Pérdida entre STAGING, TYPED y CLEAN: 0 registros.
 - Mojibake residual después de CLEAN: 0.
-- 31 colisiones conocidas de granularidad en Metro Simple, correspondientes a Línea B — Oceanía durante diciembre de 2020.
-- 0 duplicados exactos asociados a dichas colisiones.
+- 31 grupos conocidos de colisión de granularidad en Metro Simple, correspondientes a 62 filas de Línea B — Oceanía durante diciembre de 2020.
+- Las colisiones se conservan y no fueron eliminadas.
 - Pipeline validado mediante `proyecto/sql/quality/metro/06_validacion_metro.sql`.
+- Metro permanece como baseline técnico validado.
 
-**Iteración 2 — Metrobús: VALIDADA.**
+### Iteración 2 — Metrobús
+
+**Estado: VALIDADA.**
 
 Metrobús completó su pipeline individual reproducible:
 
@@ -67,37 +70,76 @@ Resultados principales:
 - Granularidad Desglosada validada: `fecha × linea × tipo_pago`.
 - 0 duplicados exactos.
 - 0 colisiones de granularidad.
-- 17,227 valores `NaN` históricos en Simple, representados como `NULL` desde TYPED y marcados mediante `es_afluencia_no_disponible`.
+- 17,227 valores `NaN` históricos en Simple, representados como `NULL` desde TYPED.
+- Los `NaN` nunca se convierten a cero.
 - 57 valores decimales preservados en cada recurso mediante `NUMERIC`.
 - 7 líneas lógicas homologadas.
-- 3,000 posibles outliers IQR en Simple y 1,090 en Desglosada; ninguno eliminado.
-- En el periodo común se validaron 14,693 claves `fecha × linea`, con 14,693 coincidencias exactas entre Simple y la suma de Desglosada.
-- Pipeline validado mediante `proyecto/sql/quality/metrobus/06_validacion_metrobus.sql`.
+- 3,000 posibles outliers IQR en Simple.
+- 1,090 posibles outliers IQR en Desglosada.
+- Ningún outlier fue eliminado.
+- En el periodo 2021-01-01 → 2026-09-30 se validaron 14,693 claves `fecha × linea`, con 14,693 coincidencias exactas entre Simple y `SUM(Desglosada.afluencia)`.
+
+Pipeline validado mediante:
+
+`proyecto/sql/quality/metrobus/06_validacion_metrobus.sql`
+
+### Checkpoint de compatibilidad Metro ↔ Metrobús
+
+**Estado: APROBADO CON RESTRICCIONES.**
+
+El checkpoint confirmó que Metro y Metrobús pueden representarse posteriormente en una capa analítica común, siempre que se respete la diferencia de granularidad entre ambos sistemas.
+
+Ventana temporal común validada:
+
+`2021-01-01 → 2026-07-31`
+
+Granularidad multisistema preliminar aprobada:
+
+`fecha × sistema × linea`
+
+Resultados principales:
+
+- 2,038 fechas distintas en la ventana común.
+- Metro produce 24,456 claves `fecha × linea`.
+- Metrobús produce 14,266 claves `fecha × linea`.
+- Total lógico multisistema: 38,722 registros.
+- 38,722 claves distintas `fecha × sistema × linea`.
+- 0 claves duplicadas.
+- 0 valores `NULL` de afluencia en la ventana común.
+- Metro Simple y Metro Desglosada coinciden exactamente en 397,410 de 397,410 claves `fecha × linea × estacion`.
+- `estacion` permanece como dimensión específica de Metro.
+- `tipo_pago` se conserva como nivel de detalle adicional y no como componente obligatorio de la granularidad común.
+- `sistema` es obligatorio para distinguir líneas con el mismo nombre textual.
+- La futura medida común deberá admitir `NUMERIC`.
+
+El checkpoint no construyó ninguna integración física ni modelo dimensional.
+
+Script:
+
+`proyecto/sql/quality/compatibilidad/01_compatibilidad_metro_metrobus.sql`
 
 Documentación:
 
-- `proyecto/docs/checkpoint_metrobus.md`
-- `proyecto/docs/contrato_datos_metrobus.md`
+`proyecto/docs/checkpoint_compatibilidad_metro_metrobus.md`
 
-Metro permanece como baseline validado.
+### Siguiente bloque técnico
 
-Metrobús todavía no se encuentra integrado físicamente con Metro.
+**Iteración 3 — RTP.**
 
-**Siguiente checkpoint:** evaluación de compatibilidad analítica Metro ↔ Metrobús.
+RTP deberá completar primero su pipeline individual y después compararse contra el contrato multisistema preliminar.
 
-**Estrategia de trabajo:** cada sistema debe completar comprensión de datos y preparación reproducible antes de integrarse a una capa analítica multisistema.
+Orden vigente:
 
-Orden previsto:
+`Metro → Metrobús → checkpoint Metro ↔ Metrobús → RTP → Cablebús → Trolebús → Tren Ligero → checkpoint multisistema final → integración física → modelo dimensional → OLAP → EDA consolidado → minería → evaluación`
 
-`Metro → Metrobús → checkpoint de compatibilidad → RTP → Cablebús → Trolebús → Tren Ligero → integración multisistema → modelo dimensional → OLAP → EDA consolidado → minería → evaluación`
-
-**Documentación vigente del proyecto:**
+### Documentación vigente del proyecto
 
 - `proyecto/README.md`
 - `proyecto/docs/contrato_datos_metro.md`
 - `proyecto/docs/metro_fuentes_y_calidad.md`
 - `proyecto/docs/contrato_datos_metrobus.md`
 - `proyecto/docs/checkpoint_metrobus.md`
+- `proyecto/docs/checkpoint_compatibilidad_metro_metrobus.md`
 
 **Regla:** `practicaXX/` conserva entregables históricos; `proyecto/` contiene únicamente el producto semestral acumulativo y vigente.
 

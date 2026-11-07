@@ -220,6 +220,147 @@ Checkpoint:
 
 Metrobús todavía no se encuentra integrado físicamente con Metro.
 
+### Checkpoint de compatibilidad Metro ↔ Metrobús
+
+El análisis de compatibilidad entre ambos sistemas fue completado.
+
+Estado:
+
+**APROBADO CON RESTRICCIONES**
+
+La evaluación se realizó sin modificar los datasets RAW ni las capas individuales validadas de Metro y Metrobús.
+
+Ventana temporal común validada:
+
+```text
+2021-01-01 → 2026-07-31
+```
+
+Granularidad multisistema preliminar:
+
+```text
+fecha × sistema × linea
+```
+
+Resultados de la representación lógica evaluada:
+
+```text
+Metro:       24,456 claves fecha × linea
+Metrobús:    14,266 claves fecha × linea
+
+Total:       38,722 registros
+Claves:      38,722
+Duplicados:       0
+NULL:             0
+Fechas:       2,038
+```
+
+La igualdad entre registros y claves distintas demuestra que no existen colisiones en la combinación preliminar:
+
+```text
+fecha × sistema × linea
+```
+
+durante la ventana temporal evaluada.
+
+#### Reconciliación interna de Metro
+
+También se comprobó la relación entre Metro Simple y Metro Desglosada durante:
+
+```text
+2021-01-01 → 2026-07-31
+```
+
+a la granularidad:
+
+```text
+fecha × linea × estacion
+```
+
+Resultado:
+
+```text
+Claves comparables:      397,410
+Coincidencias exactas:   397,410
+Solo Simple:                   0
+Solo Desglosada:               0
+Diferencias:                   0
+Máxima diferencia:             0
+```
+
+Por tanto:
+
+```text
+Metro Simple.afluencia
+=
+SUM(Metro Desglosada.afluencia)
+```
+
+para todas las claves comparables de la ventana analizada.
+
+#### Reglas derivadas del checkpoint
+
+- `sistema` debe formar parte obligatoria de cualquier futura clave multisistema.
+- `linea` no identifica globalmente una entidad por sí sola.
+- `estacion` permanece como nivel de detalle específico de Metro.
+- `tipo_pago` permanece como nivel de análisis adicional.
+- Los valores `NULL` no deben transformarse a cero.
+- Los ceros se conservan como observaciones válidas salvo evidencia contraria.
+- Los outliers no se eliminan automáticamente.
+- Las colisiones y banderas de calidad deben conservar trazabilidad hacia su sistema de origen.
+- La futura medida común de afluencia deberá admitir `NUMERIC`.
+- Las granularidades nativas de los sistemas deben preservarse.
+
+#### Estado de `processed/`
+
+El checkpoint fue realizado únicamente mediante consultas SQL de lectura.
+
+No se creó ningún dataset físico multisistema.
+
+No se materializó ninguna tabla integrada.
+
+Por tanto, la carpeta:
+
+```text
+processed/
+```
+
+debe continuar reservada hasta completar:
+
+```text
+RTP
+↓
+Cablebús
+↓
+Trolebús
+↓
+Tren Ligero
+↓
+CHECKPOINT MULTISISTEMA FINAL
+```
+
+Solo después deberá evaluarse la generación de datasets analíticos multisistema persistentes.
+
+Script del checkpoint:
+
+```text
+../sql/quality/compatibilidad/01_compatibilidad_metro_metrobus.sql
+```
+
+Documento completo:
+
+```text
+../docs/checkpoint_compatibilidad_metro_metrobus.md
+```
+
+Siguiente iteración:
+
+```text
+RTP
+```
+
+RTP deberá completar su pipeline individual antes de evaluarse contra el contrato multisistema preliminar.
+
 ---
 
 ## Principio de trazabilidad
