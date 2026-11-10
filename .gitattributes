@@ -39,3 +39,6 @@
 # Preservar los bytes de los diccionarios oficiales de Metrobús
 proyecto/data/metadata/metrobus/diccionario_metrobus_simple_original.csv -text
 proyecto/data/metadata/metrobus/diccionario_metrobus_desglosada_original.csv -text
+
+# Preservar los bytes del diccionario oficial de RTP
+proyecto/data/metadata/rtp/diccionario_rtp_original.csv -text
