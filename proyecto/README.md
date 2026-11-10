@@ -10,9 +10,14 @@ Equipo 13 — Licenciatura en Ciencia de Datos, ESCOM-IPN.
 
 El proyecto se encuentra en la fase de **Preparación de Datos de CRISP-DM**.
 
-Metro y Metrobús completaron sus pipelines individuales y el checkpoint de compatibilidad analítica entre ambos sistemas fue cerrado satisfactoriamente.
+Metro, Metrobús y RTP completaron sus pipelines individuales reproducibles.
 
-La siguiente iteración corresponde a **RTP**.
+También se completaron:
+
+- checkpoint de compatibilidad Metro ↔ Metrobús;
+- checkpoint de compatibilidad RTP ↔ contrato multisistema preliminar.
+
+La incorporación de RTP obligó a generalizar la granularidad multisistema preliminar.
 
 ### Estado de iteraciones
 
@@ -20,7 +25,7 @@ La siguiente iteración corresponde a **RTP**.
 |---|---|---|---|---|---|---|---|---|
 | Metro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Metrobús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| RTP | ⏳ | ⏳ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
+| RTP | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Cablebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
 | Trolebús | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
 | Tren Ligero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
@@ -28,7 +33,6 @@ La siguiente iteración corresponde a **RTP**.
 **Leyenda**
 
 - ✅ Validado.
-- ⏳ Próxima iteración / en preparación.
 - ⚪ Pendiente.
 
 ### Iteración 1 — STC Metro
@@ -37,13 +41,21 @@ Estado:
 
 **VALIDADA**
 
-Metro constituye el primer pipeline completo y permanece como baseline técnico.
+Metro constituye el baseline técnico del proyecto.
 
 Flujo:
 
 ```text
 RAW → STAGING → TYPED → CLEAN → VALIDACIÓN
 ```
+
+Resultados principales:
+
+- Metro Simple: 1,180,920 registros.
+- Metro Desglosada: 1,192,230 registros.
+- Pérdida entre STAGING, TYPED y CLEAN: 0 registros.
+- Metro Simple conserva 31 grupos conocidos de colisión, correspondientes a 62 filas de Línea B — Oceanía durante diciembre de 2020.
+- Los ceros, outliers y colisiones se conservan.
 
 ### Iteración 2 — Metrobús
 
@@ -65,7 +77,8 @@ Resultados principales:
 - Granularidad Simple: `fecha × linea`.
 - Granularidad Desglosada: `fecha × linea × tipo_pago`.
 - 17,227 `NaN` históricos preservados como `NULL` desde TYPED.
-- 57 valores decimales preservados mediante `NUMERIC`.
+- `NULL ≠ 0`.
+- 57 valores decimales preservados mediante `NUMERIC` en cada recurso.
 - 0 duplicados exactos.
 - 0 colisiones.
 - 7 líneas lógicas homologadas.
@@ -91,7 +104,7 @@ Estado:
 
 **APROBADO CON RESTRICCIONES**
 
-Script reproducible:
+Script:
 
 ```text
 sql/quality/compatibilidad/01_compatibilidad_metro_metrobus.sql
@@ -103,13 +116,13 @@ Documento:
 docs/checkpoint_compatibilidad_metro_metrobus.md
 ```
 
-Ventana común validada:
+Ventana común evaluada:
 
 ```text
 2021-01-01 → 2026-07-31
 ```
 
-Granularidad multisistema preliminar:
+Granularidad aprobada en ese momento:
 
 ```text
 fecha × sistema × linea
@@ -125,40 +138,26 @@ Fechas distintas:         2,038
 Afluencias NULL:               0
 ```
 
-Reconciliación interna de Metro:
+Esta granularidad se mantiene válida para Metro y Metrobús, pero dejó de ser suficientemente general al incorporar RTP.
+
+### Iteración 3 — RTP
+
+Estado:
+
+**VALIDADA**
+
+Pipeline:
 
 ```text
-Claves comparables:      397,410
-Coincidencias exactas:   397,410
-Diferencias:                   0
-Máxima diferencia:             0
-```
-
-Decisiones principales:
-
-- `sistema` es obligatorio para identificar correctamente una línea;
-- `estacion` permanece específica de Metro;
-- `tipo_pago` permanece como detalle adicional;
-- `NULL` y cero conservan significados distintos;
-- los outliers no se eliminan;
-- las granularidades nativas se conservan;
-- no se construye todavía integración física;
-- no se construye todavía modelo dimensional definitivo.
-
-### Siguiente iteración
-
-**Iteración 3 — RTP**
-
-RTP deberá completar:
-
-```text
-FUENTE
+FUENTE OFICIAL
 ↓
 RAW
 ↓
-METADATA
+METADATA / PROCEDENCIA
 ↓
 INSPECCIÓN
+↓
+SHA-256
 ↓
 MANIFEST
 ↓
@@ -172,10 +171,249 @@ CLEAN
 ↓
 VALIDACIÓN
 ↓
-CONTRATO
+CONTRATO DE DATOS
+↓
+CHECKPOINT INDIVIDUAL
 ```
 
-Solo después se evaluará su compatibilidad con el contrato multisistema preliminar.
+Resultados principales:
+
+```text
+Registros:                     41,676
+Cobertura:        2022-01-01 → 2026-09-30
+Fechas distintas:               1,734
+Tipos de pago:                      3
+Servicios CLEAN:                   21
+```
+
+Calidad:
+
+```text
+NaN / NULL:                       187
+Ceros:                          7,450
+Valores decimales:                 53
+Grupos duplicados exactos:         81
+Filas en duplicados exactos:      162
+Grupos con colisión:              276
+Filas con colisión:               552
+Outliers IQR:                   4,688
+```
+
+Pérdida:
+
+```text
+STAGING → TYPED → CLEAN = 0
+```
+
+RTP utiliza la dimensión:
+
+```text
+servicio
+```
+
+No se demostró que:
+
+```text
+servicio = linea
+```
+
+La granularidad:
+
+```text
+fecha × servicio × tipo_pago
+```
+
+presenta colisiones y no constituye una clave natural única.
+
+Las colisiones se concentran en ATENEA y se preservan.
+
+Contrato:
+
+```text
+docs/contrato_datos_rtp.md
+```
+
+Checkpoint individual:
+
+```text
+docs/checkpoint_rtp.md
+```
+
+### Checkpoint RTP ↔ contrato multisistema preliminar
+
+Estado:
+
+**APROBADO CON RESTRICCIONES**
+
+Script reproducible:
+
+```text
+sql/quality/compatibilidad/02_compatibilidad_rtp_contrato_preliminar.sql
+```
+
+Documento:
+
+```text
+docs/checkpoint_compatibilidad_rtp_multisistema.md
+```
+
+La ventana estrictamente común para Metro, Metrobús y RTP es:
+
+```text
+2022-01-01 → 2026-07-31
+```
+
+Fechas distintas:
+
+```text
+1,673
+```
+
+La incorporación de RTP generalizó el contrato anterior:
+
+```text
+fecha × sistema × linea
+```
+
+hacia:
+
+```text
+fecha × sistema × unidad_operativa
+```
+
+Mapeo conceptual:
+
+```text
+Metro:
+unidad_operativa = linea
+
+Metrobús:
+unidad_operativa = linea
+
+RTP:
+unidad_operativa = servicio
+```
+
+`unidad_operativa` es una abstracción analítica y no implica que `linea` y `servicio` sean conceptos idénticos.
+
+Resultados del candidato conceptual:
+
+| Sistema | Registros | Claves distintas | Unidades operativas | Afluencia NULL | Claves con restricción |
+|---|---:|---:|---:|---:|---:|
+| Metro | 20,076 | 20,076 | 12 | 0 | 0 |
+| Metrobús | 11,711 | 11,711 | 7 | 0 | 0 |
+| RTP | 13,382 | 13,382 | 21 | 223 | 223 |
+
+Resultado global:
+
+```text
+Registros totales:        45,169
+Claves distintas:         45,169
+Claves duplicadas:             0
+Fechas distintas:          1,673
+Afluencias NULL:             223
+Claves con restricción:      223
+```
+
+Las 223 restricciones RTP corresponden a:
+
+```text
+92  → COLISION
+131 → AFLUENCIA_INCOMPLETA
+```
+
+Para dichas claves no se construye artificialmente una afluencia total:
+
+```text
+afluencia = NULL
+```
+
+La integración física multisistema continúa pendiente.
+
+### Contrato multisistema preliminar vigente
+
+Granularidad conceptual:
+
+```text
+fecha × sistema × unidad_operativa
+```
+
+Medida común:
+
+```text
+afluencia reportada
+```
+
+Tipo físico futuro requerido:
+
+```text
+NUMERIC
+```
+
+Reglas vigentes:
+
+- `sistema` es obligatorio;
+- `unidad_operativa` debe interpretarse dentro de su sistema;
+- `NULL ≠ 0`;
+- no imputar valores faltantes automáticamente;
+- no eliminar outliers únicamente por magnitud;
+- no resolver colisiones sin evidencia;
+- conservar granularidades nativas;
+- conservar trazabilidad hacia CLEAN, TYPED, STAGING y RAW;
+- `estacion` permanece específica de Metro;
+- `tipo_pago` permanece como nivel adicional;
+- no construir todavía una tabla de hechos definitiva;
+- no materializar todavía un dataset multisistema definitivo en `processed/`.
+
+### Siguiente iteración
+
+El siguiente sistema pendiente es:
+
+**Cablebús**
+
+Deberá completar individualmente:
+
+```text
+FUENTE OFICIAL
+↓
+RAW
+↓
+METADATA / PROCEDENCIA
+↓
+INSPECCIÓN
+↓
+SHA-256
+↓
+MANIFEST
+↓
+STAGING
+↓
+PERFILADO
+↓
+TYPED
+↓
+CLEAN
+↓
+VALIDACIÓN
+↓
+CONTRATO DE DATOS
+↓
+CHECKPOINT INDIVIDUAL
+```
+
+Después deberá evaluarse contra el contrato multisistema preliminar vigente:
+
+```text
+fecha × sistema × unidad_operativa
+```
+
+No debe construirse todavía:
+
+- integración física definitiva;
+- tabla de hechos definitiva;
+- modelo dimensional definitivo;
+- dataset multisistema definitivo en `processed/`;
+- cubo OLAP definitivo.
 
 ---
 
@@ -421,74 +659,63 @@ Solo después se evalúa compatibilidad con los sistemas existentes.
 
 ## Próximo objetivo
 
-### Iteración 3 — RTP
+### Iteración 4 — Cablebús
 
-El checkpoint de compatibilidad analítica Metro ↔ Metrobús se encuentra cerrado con resultado:
+Metro, Metrobús y RTP cuentan con pipelines individuales validados.
 
-**APROBADO CON RESTRICCIONES**
+El contrato multisistema preliminar vigente es:
 
-La siguiente etapa del proyecto corresponde a la incorporación de **RTP** como tercer sistema de transporte.
+```text
+fecha × sistema × unidad_operativa
+```
 
-Antes de evaluar cualquier integración multisistema, RTP deberá completar individualmente:
+con ventana común actual:
+
+```text
+2022-01-01 → 2026-07-31
+```
+
+La siguiente etapa corresponde a **Cablebús**.
+
+Cablebús deberá completar individualmente:
 
 1. identificación de la fuente oficial;
-2. preservación de archivos RAW;
-3. registro de procedencia;
-4. verificación de integridad mediante SHA-256;
-5. generación del manifest;
-6. inspección estructural;
-7. construcción de STAGING;
+2. preservación RAW;
+3. metadata y procedencia;
+4. SHA-256;
+5. inspección reproducible;
+6. manifest;
+7. STAGING;
 8. perfilado;
-9. construcción de TYPED;
-10. construcción de CLEAN;
+9. TYPED;
+10. CLEAN;
 11. validación integral;
 12. contrato de datos;
 13. checkpoint individual.
 
-El pipeline esperado será:
+Después deberá evaluarse su compatibilidad contra:
 
 ```text
-FUENTE OFICIAL
-      ↓
-RAW
-      ↓
-METADATA / PROCEDENCIA
-      ↓
-INSPECCIÓN
-      ↓
-MANIFEST
-      ↓
-STAGING
-      ↓
-PERFILADO
-      ↓
-TYPED
-      ↓
-CLEAN
-      ↓
-VALIDACIÓN
-      ↓
-CONTRATO DE DATOS
-      ↓
-CHECKPOINT INDIVIDUAL
+fecha × sistema × unidad_operativa
 ```
 
-Después de validar RTP se evaluará su compatibilidad contra el contrato multisistema preliminar establecido mediante Metro y Metrobús.
+La dimensión nativa equivalente a `unidad_operativa` deberá demostrarse a partir de los datos y metadatos de Cablebús.
 
-Actualmente se considera como granularidad multisistema preliminar:
+No debe asumirse de antemano que será:
 
 ```text
-fecha × sistema × linea
+linea
 ```
 
-Esta granularidad no debe considerarse definitiva hasta evaluar los sistemas restantes.
+ni modificarse la fuente para adaptarla al contrato.
 
-No debe construirse todavía:
+Todavía no debe construirse:
 
 - una integración física multisistema definitiva;
 - una tabla de hechos definitiva;
 - un modelo dimensional definitivo;
-- estructuras OLAP definitivas.
+- estructuras OLAP definitivas;
+- un dataset multisistema definitivo en `processed/`.
 
 El orden vigente de trabajo es:
 
@@ -500,6 +727,8 @@ Metrobús
 Checkpoint Metro ↔ Metrobús
 ↓
 RTP
+↓
+Checkpoint RTP ↔ contrato multisistema
 ↓
 Cablebús
 ↓
@@ -529,9 +758,9 @@ Evaluación
 | Fase | Estado |
 |---|---|
 | Comprensión del negocio | Avanzada |
-| Comprensión de los datos | Avanzada para Metro y Metrobús; RTP es la siguiente iteración |
-| Preparación de datos | Metro y Metrobús validados; checkpoint de compatibilidad aprobado |
-| Integración multisistema | Pendiente hasta evaluar los sistemas restantes |
+| Comprensión de los datos | Avanzada para Metro, Metrobús y RTP; Cablebús es la siguiente iteración |
+| Preparación de datos | Metro, Metrobús y RTP validados; checkpoints de compatibilidad aprobados con restricciones |
+| Integración multisistema | Compatibilidad conceptual en desarrollo; integración física pendiente |
 | Modelado | Pendiente |
 | Evaluación | Pendiente |
 | Despliegue académico | Pendiente |
