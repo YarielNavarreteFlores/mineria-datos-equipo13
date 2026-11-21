@@ -1,0 +1,3 @@
+﻿sistema,archivo,ruta_origen,tamano_bytes,tamano_mib,sha256,encoding_detectado,delimitador,numero_columnas,filas_datos,filas_malformadas,estado
+cablebus,afluencia_desglosada_cb_09_2026.csv,proyecto\data\raw\cablebus\afluencia_desglosada_cb_09_2026.csv,369497,0.35,D5761D27F0D12198F434D569713B34CEC5FFA61C84F28FE66A294B536A67624C,utf-8-sig,"','",6,7972,0,INSPECCIONADO_PENDIENTE_VALIDACION
+cablebus,diccionario_cablebus_original.csv,proyecto\data\metadata\cablebus\diccionario_cablebus_original.csv,1631,0.0,0EA0FC2A8ED1894802CCD4EE63FD93EF0B8D2D564B610D301A21C34341C29C39,cp1252,"','",9,8,0,INSPECCIONADO_PENDIENTE_VALIDACION
