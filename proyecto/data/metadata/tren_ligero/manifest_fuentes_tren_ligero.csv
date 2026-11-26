@@ -1,0 +1,3 @@
+﻿sistema,archivo,ruta_origen,tamano_bytes,tamano_mib,sha256,encoding_detectado,delimitador,numero_columnas,filas_datos,filas_malformadas,estado
+tren_ligero,afluencia_desglosada_tl_10_2026.csv,proyecto\data\raw\tren_ligero\afluencia_desglosada_tl_10_2026.csv,137503,0.13,20F7CE65A095A58306B788070F93D882F0D23885345F7ADD2954F0E8A2CCC15F,utf-8-sig,"','",5,3530,0,INSPECCIONADO_PENDIENTE_VALIDACION
+tren_ligero,diccionario_tren_ligero_original.csv,proyecto\data\metadata\tren_ligero\diccionario_tren_ligero_original.csv,1631,0.0,0EA0FC2A8ED1894802CCD4EE63FD93EF0B8D2D564B610D301A21C34341C29C39,cp1252,"','",9,8,0,INSPECCIONADO_PENDIENTE_VALIDACION

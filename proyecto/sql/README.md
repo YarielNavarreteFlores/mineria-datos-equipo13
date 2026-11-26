@@ -832,54 +832,20 @@ Documento completo:
 
 # Estado actual
 
+La capa SQL del proyecto contiene actualmente pipelines individuales validados para seis sistemas:
+
 ```text
 Metro
-Pipeline individual:
-VALIDADO
-
 Metrobús
-Pipeline individual:
-VALIDADO
-
-Checkpoint Metro ↔ Metrobús:
-APROBADO CON RESTRICCIONES
-
-Granularidad multisistema preliminar:
-fecha × sistema × linea
-
-Ventana temporal preliminar:
-2021-01-01 → 2026-07-31
-
-Integración física:
-PENDIENTE
-
-Modelo dimensional:
-PENDIENTE
+RTP
+Cablebús
+Trolebús
+Tren Ligero
 ```
 
----
-
-# Siguiente bloque del proyecto
-
-El siguiente trabajo corresponde a:
+Cada sistema cuenta con scripts reproducibles de:
 
 ```text
-ITERACIÓN 3 — RTP
-```
-
-RTP deberá completar individualmente:
-
-```text
-FUENTE
-↓
-RAW
-↓
-METADATA / PROCEDENCIA
-↓
-INSPECCIÓN
-↓
-MANIFEST
-↓
 STAGING
 ↓
 PERFILADO
@@ -889,28 +855,187 @@ TYPED
 CLEAN
 ↓
 VALIDACIÓN
-↓
-CONTRATO DE DATOS
-↓
-CHECKPOINT INDIVIDUAL
 ```
 
-Después se evaluará su compatibilidad con el contrato multisistema preliminar.
+y con evidencia documental de su contrato de datos y checkpoint individual.
 
-El orden vigente continúa:
+Los checkpoints de compatibilidad disponibles son:
 
 ```text
+Metro ↔ Metrobús
+RTP ↔ contrato multisistema
+Cablebús ↔ contrato multisistema
+Trolebús ↔ contrato multisistema
+Tren Ligero ↔ contrato multisistema
+```
+
+El contrato analítico multisistema vigente es:
+
+```text
+fecha × sistema × unidad_operativa
+```
+
+Mapeo:
+
+```text
+Metro
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+Metrobús
+→ unidad_operativa = linea
+→ origen = FUENTE
+
 RTP
-↓
+→ unidad_operativa = servicio
+→ origen = FUENTE
+
 Cablebús
-↓
+→ unidad_operativa = linea
+→ origen = FUENTE
+
 Trolebús
-↓
+→ unidad_operativa = linea
+→ origen = FUENTE
+
 Tren Ligero
+→ unidad_operativa = Sistema completo
+→ origen = DERIVADA PARA INTEGRACIÓN
+```
+
+Para Tren Ligero:
+
+```text
+unidad_operativa = Sistema completo
+```
+
+es una abstracción analítica derivada exclusivamente para integración y no una columna física de la fuente.
+
+La ventana temporal estrictamente común es:
+
+```text
+2022-01-01 → 2026-07-31
+```
+
+con:
+
+```text
+1,673 fechas distintas
+```
+
+El candidato conceptual multisistema contiene:
+
+```text
+Metro:          20,076
+Metrobús:       11,711
+RTP:            13,382
+Cablebús:        3,803
+Trolebús:       20,199
+Tren Ligero:     1,673
+----------------------
+Total:          70,844
+```
+
+Validación global:
+
+```text
+Registros totales:       70,844
+Claves distintas:        70,844
+Claves duplicadas:            0
+Fechas distintas:         1,673
+Claves con restricción:     223
+```
+
+Las 223 restricciones de calidad pertenecen exclusivamente a RTP.
+
+Tren Ligero no incorpora restricciones de calidad adicionales; su restricción es semántica.
+
+Estado global:
+
+```text
+APROBADO CON RESTRICCIONES
+```
+
+La integración física multisistema continúa:
+
+```text
+PENDIENTE
+```
+
+El modelo dimensional continúa:
+
+```text
+PENDIENTE
+```
+
+No debe construirse todavía una tabla de hechos multisistema definitiva antes de cerrar el checkpoint multisistema final.
+
+---
+
+# Siguiente bloque del proyecto
+
+Las seis iteraciones individuales definidas dentro del alcance actual ya fueron completadas:
+
+```text
+Iteración 1 — Metro
+VALIDADA
+
+Iteración 2 — Metrobús
+VALIDADA
+
+Iteración 3 — RTP
+VALIDADA
+
+Iteración 4 — Cablebús
+VALIDADA
+
+Iteración 5 — Trolebús
+VALIDADA
+
+Iteración 6 — Tren Ligero
+VALIDADA
+```
+
+También fueron evaluadas sus compatibilidades con el contrato multisistema.
+
+El siguiente bloque técnico corresponde a:
+
+```text
+CHECKPOINT MULTISISTEMA FINAL
+```
+
+Su objetivo será cerrar formalmente:
+
+```text
+granularidad común
++
+clave global
++
+ventana temporal común
++
+semántica de unidad_operativa
++
+dominio común de afluencia
++
+reglas de calidad
++
+restricciones conocidas
+```
+
+antes de materializar una integración física.
+
+El orden vigente es:
+
+```text
+6 PIPELINES INDIVIDUALES VALIDADOS
+↓
+5 CHECKPOINTS DE COMPATIBILIDAD COMPLETADOS
 ↓
 CHECKPOINT MULTISISTEMA FINAL
 ↓
-INTEGRACIÓN FÍSICA
+INTEGRACIÓN FÍSICA MULTISISTEMA
+↓
+BASE HISTÓRICA
 ↓
 MODELO DIMENSIONAL
 ↓
@@ -918,9 +1043,18 @@ OLAP
 ↓
 EDA CONSOLIDADO
 ↓
-MINERÍA
+MINERÍA DE DATOS
 ↓
 EVALUACIÓN
 ```
 
-No debe implementarse una integración física multisistema definitiva antes de completar las iteraciones restantes y el checkpoint multisistema final.
+Todavía no debe implementarse:
+
+```text
+tabla de hechos multisistema definitiva
+dataset multisistema definitivo
+modelo dimensional definitivo
+cubo OLAP definitivo
+```
+
+hasta cerrar el checkpoint multisistema final.
