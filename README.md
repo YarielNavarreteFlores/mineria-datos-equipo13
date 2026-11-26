@@ -1,7 +1,7 @@
 # Minería de Datos — Equipo 13
 
-> **Documento maestro operativo del semestre**  
-> Licenciatura en Ciencia de Datos · ESCOM · Instituto Politécnico Nacional  
+> **Documento maestro operativo del semestre**
+> Licenciatura en Ciencia de Datos · ESCOM · Instituto Politécnico Nacional
 > Unidad de Aprendizaje: **Minería de Datos** · Periodo **2026-B**
 
 ---
@@ -52,6 +52,7 @@ Metrobús
 RTP
 Cablebús
 Trolebús
+Tren
 ```
 
 ---
@@ -1193,23 +1194,24 @@ cubo OLAP definitivo
 Los resultados actuales constituyen un:
 
 ```text
-contrato analítico preliminar validado
+contrato analítico multisistema validado
 ```
 
-para cinco sistemas.
+para seis sistemas.
 
-La integración física continuará pendiente hasta completar los sistemas restantes y cerrar el checkpoint multisistema final.
+La integración física continúa pendiente hasta cerrar el checkpoint multisistema final.
 
 ---
 
 #### Sistemas actualmente incorporados al contrato
 
 ```text
-Metro       → VALIDADO
-Metrobús    → VALIDADO
-RTP         → VALIDADO CON RESTRICCIONES EN EL CANDIDATO
-Cablebús    → VALIDADO
-Trolebús    → VALIDADO
+Metro        → VALIDADO
+Metrobús     → VALIDADO
+RTP          → VALIDADO CON RESTRICCIONES EN EL CANDIDATO
+Cablebús     → VALIDADO
+Trolebús     → VALIDADO
+Tren Ligero  → VALIDADO CON RESTRICCIÓN SEMÁNTICA
 ```
 
 Compatibilidad:
@@ -1222,10 +1224,47 @@ RTP ↔ contrato multisistema
 → APROBADO CON RESTRICCIONES
 
 Cablebús ↔ contrato multisistema
-→ APROBADA
+→ APROBADO
 
 Trolebús ↔ contrato multisistema
-→ APROBADA
+→ APROBADO
+
+Tren Ligero ↔ contrato multisistema
+→ APROBADO CON RESTRICCIONES
+```
+
+Contrato vigente:
+
+```text
+fecha × sistema × unidad_operativa
+```
+
+Mapeo:
+
+```text
+Metro
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+Metrobús
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+RTP
+→ unidad_operativa = servicio
+→ origen = FUENTE
+
+Cablebús
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+Trolebús
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+Tren Ligero
+→ unidad_operativa = Sistema completo
+→ origen = DERIVADA PARA INTEGRACIÓN
 ```
 
 Estado global:
@@ -1234,15 +1273,35 @@ Estado global:
 APROBADO CON RESTRICCIONES
 ```
 
-Las restricciones vigentes corresponden exclusivamente a RTP.
+Candidato actual:
+
+```text
+70,844 registros
+70,844 claves distintas
+0 claves duplicadas
+1,673 fechas distintas
+223 claves con restricción de calidad
+```
+
+Las 223 restricciones de calidad pertenecen exclusivamente a RTP.
+
+Tren Ligero no agrega restricciones de calidad; su restricción es semántica debido a que:
+
+```text
+unidad_operativa = Sistema completo
+```
+
+es una dimensión derivada exclusivamente para integración.
 
 ---
 
 ### Siguiente bloque técnico
 
-**Iteración 6 — Tren Ligero.**
+### Iteración 6 — Tren Ligero
 
-Trolebús ya completó:
+**Estado: VALIDADA.**
+
+Tren Ligero completó:
 
 ```text
 FUENTE OFICIAL
@@ -1271,124 +1330,270 @@ CONTRATO DE DATOS
 ↓
 CHECKPOINT INDIVIDUAL
 ↓
-COMPATIBILIDAD CON CONTRATO MULTISISTEMA
+COMPATIBILIDAD MULTISISTEMA
 ```
 
-Estados formales:
+Resultados principales:
 
 ```text
-PIPELINE INDIVIDUAL TROLEBÚS: VALIDADO
+Registros STAGING: 3,530
+Registros TYPED:   3,530
+Registros CLEAN:   3,530
+Pérdida:               0
 ```
 
+Cobertura individual:
+
 ```text
-CHECKPOINT INDIVIDUAL TROLEBÚS: APROBADO
+2022-01-01 → 2026-10-31
+1,765 fechas distintas
 ```
 
+Granularidad individual:
+
 ```text
-COMPATIBILIDAD TROLEBÚS ↔ CONTRATO MULTISISTEMA: APROBADA
+fecha × tipo_pago
 ```
 
-Por tanto, el siguiente sistema pendiente es:
+Dominio:
 
 ```text
-Tren Ligero
+Gratuidad
+Prepago
 ```
 
-Tren Ligero deberá comenzar nuevamente desde comprensión de la fuente oficial y no desde una adaptación automática de Trolebús, Cablebús o cualquier otro sistema.
-
-Antes de proponer transformaciones deberán comprobarse directamente:
+Calidad:
 
 ```text
-estructura física
-cobertura temporal
-granularidad
-dominio de unidades operativas
-tipo de pago
-valores faltantes
-ceros
-negativos
-decimales
-duplicados
-colisiones
-outliers
-consistencia temporal
-metadatos oficiales
+NULL de afluencia:            0
+Ceros:                        0
+Valores decimales:          516
+Negativos:                    0
+Duplicados exactos:           0
+Colisiones:                   0
+Posibles outliers IQR:        0
 ```
 
-No debe asumirse previamente qué campo de Tren Ligero corresponde a:
+La medida `afluencia` utiliza:
 
 ```text
+NUMERIC(18,12)
+```
+
+La fuente no contiene:
+
+```text
+linea
+servicio
 unidad_operativa
 ```
 
-La equivalencia deberá demostrarse a partir de los datos, el diccionario y los metadatos oficiales.
+y el pipeline individual no creó artificialmente dichas dimensiones.
 
-Después del pipeline individual, Tren Ligero deberá evaluarse contra:
+Estado formal:
+
+```text
+PIPELINE INDIVIDUAL TREN LIGERO: VALIDADO
+CHECKPOINT INDIVIDUAL TREN LIGERO: APROBADO
+```
+
+### Checkpoint Tren Ligero ↔ contrato multisistema
+
+**Estado: APROBADO CON RESTRICCIONES.**
+
+La ventana común de los seis sistemas permanece:
+
+```text
+2022-01-01 → 2026-07-31
+```
+
+con:
+
+```text
+1,673 fechas distintas
+```
+
+Dentro de dicha ventana, Tren Ligero aporta:
+
+```text
+1,673 claves
+1,673 claves estructuralmente OK
+0 NULL
+0 duplicadas
+0 restricciones de calidad
+```
+
+Para incorporarlo conceptualmente al contrato se validó:
+
+```text
+sistema = Tren Ligero
+unidad_operativa = Sistema completo
+```
+
+La dimensión:
+
+```text
+Sistema completo
+```
+
+es **DERIVADA PARA INTEGRACIÓN** y no constituye una columna física de la fuente.
+
+La agregación diaria:
+
+```text
+SUM(afluencia)
+GROUP BY fecha
+```
+
+preserva exactamente la demanda:
+
+```text
+Afluencia origen:     128,678,219.683676
+Afluencia candidato:  128,678,219.683676
+Diferencia:                           0
+```
+
+El candidato multisistema de seis sistemas produce:
+
+```text
+Metro:          20,076
+Metrobús:       11,711
+RTP:            13,382
+Cablebús:        3,803
+Trolebús:       20,199
+Tren Ligero:     1,673
+----------------------
+Total:          70,844
+```
+
+Validación global:
+
+```text
+Registros totales:       70,844
+Claves distintas:        70,844
+Claves duplicadas:            0
+Fechas distintas:         1,673
+Afluencias NULL:            223
+Claves con restricción:     223
+```
+
+Las 223 restricciones de calidad continúan perteneciendo exclusivamente a RTP.
+
+Resultado Tren Ligero:
+
+```text
+COMPATIBILIDAD TREN LIGERO
+↔
+CONTRATO MULTISISTEMA
+
+APROBADA CON RESTRICCIONES
+```
+
+---
+
+### Contrato multisistema vigente
+
+El contrato conceptual vigente continúa siendo:
 
 ```text
 fecha × sistema × unidad_operativa
 ```
 
-Actualmente este contrato cuenta con evidencia para:
+Mapeo validado para los seis sistemas:
 
 ```text
 Metro
 → unidad_operativa = linea
+→ origen = FUENTE
 
 Metrobús
 → unidad_operativa = linea
+→ origen = FUENTE
 
 RTP
 → unidad_operativa = servicio
+→ origen = FUENTE
 
 Cablebús
 → unidad_operativa = linea
+→ origen = FUENTE
 
 Trolebús
 → unidad_operativa = linea
+→ origen = FUENTE
+
+Tren Ligero
+→ unidad_operativa = Sistema completo
+→ origen = DERIVADA PARA INTEGRACIÓN
 ```
 
-No deben modificarse artificialmente los pipelines previamente validados para adaptar Tren Ligero.
-
-Orden de trabajo vigente:
+Ventana estrictamente común:
 
 ```text
-Metro
+2022-01-01 → 2026-07-31
+```
+
+Resultado:
+
+```text
+70,844 registros
+70,844 claves distintas
+0 claves duplicadas
+1,673 fechas distintas
+223 claves con restricción de calidad
+```
+
+Estado global:
+
+```text
+APROBADO CON RESTRICCIONES
+```
+
+La futura medida multisistema debe admitir:
+
+```text
+NUMERIC
+```
+
+para preservar sin pérdida los valores enteros y decimales de todos los sistemas.
+
+La integración física continúa pendiente.
+
+---
+
+### Siguiente bloque técnico
+
+Ya no existen sistemas individuales pendientes dentro del alcance actualmente definido.
+
+El siguiente paso es:
+
+```text
+CHECKPOINT MULTISISTEMA FINAL
+```
+
+El orden de trabajo pasa a ser:
+
+```text
+Seis pipelines individuales validados
 ↓
-Metrobús
+Seis sistemas evaluados contra el contrato
 ↓
-Checkpoint Metro ↔ Metrobús
+CHECKPOINT MULTISISTEMA FINAL
 ↓
-RTP
+INTEGRACIÓN FÍSICA MULTISISTEMA
 ↓
-Checkpoint RTP ↔ contrato multisistema
-↓
-Cablebús
-↓
-Checkpoint Cablebús ↔ contrato multisistema
-↓
-Trolebús
-↓
-Checkpoint Trolebús ↔ contrato multisistema
-↓
-Tren Ligero
-↓
-Checkpoint Tren Ligero ↔ contrato multisistema
-↓
-Checkpoint multisistema final
-↓
-Integración física multisistema
-↓
-Modelo dimensional
+MODELO DIMENSIONAL
 ↓
 OLAP
 ↓
-EDA consolidado
+EDA CONSOLIDADO
 ↓
-Minería de datos
+MINERÍA DE DATOS
 ↓
-Evaluación
+EVALUACIÓN
 ```
+
+Todavía no debe construirse la integración física antes de cerrar formalmente el checkpoint multisistema final.
 
 ---
 
@@ -1571,21 +1776,20 @@ Analizar y modelar los patrones históricos de demanda de los principales sistem
 
 ## 9.1 Sistemas contemplados
 
-El proyecto se plantea de forma incremental.
+El proyecto se desarrolla de forma incremental.
 
 ### Iteraciones individuales validadas
 
 - **STC Metro**
 - **Metrobús**
+- **RTP**
+- **Cablebús**
+- **Trolebús**
+- **Tren Ligero**
 
-### Sistemas previstos para evaluación e integración posterior
+Los seis sistemas seleccionados han completado su pipeline individual de preparación y validación.
 
-- RTP
-- Cablebús
-- Trolebús
-- Tren Ligero
-
-La incorporación de una fuente no debe hacerse únicamente porque exista. Antes de integrarla se debe comprobar:
+La incorporación de una fuente no se realizó únicamente porque existiera. Para cada sistema se comprobó:
 
 - procedencia;
 - cobertura;
@@ -1595,6 +1799,8 @@ La incorporación de una fuente no debe hacerse únicamente porque exista. Antes
 - compatibilidad temporal;
 - compatibilidad semántica;
 - utilidad para la pregunta de minería.
+
+El siguiente paso ya no consiste en incorporar otro sistema individual, sino en cerrar formalmente el **checkpoint multisistema final** antes de construir la integración física.
 
 ## 9.2 Fuera de alcance actual
 
@@ -3121,17 +3327,16 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | Evaluación | ⚪ Pendiente |
 | Entregables finales | ⚪ Pendiente |
 
-### Estado por sistema de transporte
+## Estado por sistema de transporte
 
 | Sistema | Comprensión | RAW | STAGING | TYPED | CLEAN | Validación | Contrato | Estado |
 |---|---|---|---|---|---|---|---|---|
-| Metro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Baseline validado |
-| Metrobús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Pipeline individual validado |
-| RTP | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Pipeline individual validado |
-| Cablebús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Pipeline individual validado |
-| Trolebús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | Pipeline individual validado; compatibilidad multisistema aprobada |
-| Tren Ligero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | Pendiente |
-
+| Metro | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | Baseline validado |
+| Metrobús | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | Pipeline individual validado |
+| RTP | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | Pipeline validado; compatibilidad con restricciones |
+| Cablebús | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | Pipeline individual validado; compatibilidad aprobada |
+| Trolebús | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | Pipeline individual validado; compatibilidad aprobada |
+| Tren Ligero | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | ☑ | Pipeline individual validado; compatibilidad aprobada con restricción semántica |
 ---
 
 # 50. Roadmap semestral
@@ -3139,46 +3344,47 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 ```text
 Práctica 1
 Definición + comprensión + baseline Metro
-        │
-        ▼
+        ↓
 Práctica 2
 Preparación / SQL / calidad / reproducibilidad
-        │
-        ▼
+        ↓
 Iteración 1 — Metro
 Baseline validado
-        │
-        ▼
+        ↓
 Iteración 2 — Metrobús
 Comprensión + preparación + validación
-        │
-        ▼
+        ↓
 Checkpoint Metro ↔ Metrobús
 Compatibilidad semántica y granularidad común
-        │
-        ▼
-Iteraciones restantes
-RTP + Cablebús + Trolebús + Tren Ligero
-        │
-        ▼
-Homologación e integración multisistema
-        │
-        ▼
+        ↓
+Iteración 3 — RTP
+Pipeline + compatibilidad multisistema
+        ↓
+Iteración 4 — Cablebús
+Pipeline + compatibilidad multisistema
+        ↓
+Iteración 5 — Trolebús
+Pipeline + compatibilidad multisistema
+        ↓
+Iteración 6 — Tren Ligero
+Pipeline + compatibilidad multisistema
+        ↓
+6 SISTEMAS INDIVIDUALES VALIDADOS
+        ↓
+CHECKPOINT MULTISISTEMA FINAL
+        ↓
+Homologación e integración física multisistema
+        ↓
 Base histórica
-        │
-        ▼
+        ↓
 Modelo dimensional
-        │
-        ▼
+        ↓
 OLAP
-        │
-        ▼
+        ↓
 EDA consolidado
-        │
-        ▼
+        ↓
 Minería de datos
-        │
-        ▼
+        ↓
 Evaluación
         │
         ▼
@@ -3274,8 +3480,8 @@ git pull
 
 # 54. Estado del documento
 
-**Documento:** README maestro operativo  
-**Proyecto:** Inteligencia de demanda de los principales sistemas de transporte público de la Ciudad de México  
-**Equipo:** 13  
-**Periodo:** 2026-B  
+**Documento:** README maestro operativo
+**Proyecto:** Inteligencia de demanda de los principales sistemas de transporte público de la Ciudad de México
+**Equipo:** 13
+**Periodo:** 2026-B
 **Estado:** Activo — debe mantenerse durante todo el semestre

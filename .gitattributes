@@ -48,3 +48,6 @@ proyecto/data/metadata/cablebus/diccionario_cablebus_original.csv -text
 
 # Preservar los bytes del diccionario oficial de Trolebús
 proyecto/data/metadata/trolebus/diccionario_trolebus_original.csv -text
+
+# Preservar los bytes del diccionario oficial de Tren Ligero
+proyecto/data/metadata/tren_ligero/diccionario_tren_ligero_original.csv -text -diff

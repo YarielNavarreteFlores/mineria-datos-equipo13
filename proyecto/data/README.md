@@ -106,53 +106,98 @@ Un archivo debe entrar a `processed/` únicamente cuando su propósito analític
 
 ## Estado actual
 
+El proyecto cuenta actualmente con seis sistemas de transporte cuyo pipeline individual de datos ha sido validado:
+
+```text
+Metro
+Metrobús
+RTP
+Cablebús
+Trolebús
+Tren Ligero
+```
+
+Todos siguen el principio general:
+
+```text
+FUENTE OFICIAL
+↓
+RAW
+↓
+METADATA / PROCEDENCIA
+↓
+INSPECCIÓN
+↓
+SHA-256
+↓
+MANIFEST
+↓
+STAGING
+↓
+PERFILADO
+↓
+TYPED
+↓
+CLEAN
+↓
+VALIDACIÓN
+```
+
+Los archivos RAW permanecen fuera de Git cuando corresponde, mientras que la evidencia reproducible de procedencia, inspección, checksums y manifest se conserva en:
+
+```text
+metadata/
+```
+
+---
+
 ### Metro
 
-Fuentes registradas:
+Estado:
+
+```text
+PIPELINE INDIVIDUAL:
+VALIDADO
+```
+
+Fuentes principales:
 
 | Fuente | Registros | Estado |
 |---|---:|---|
 | Metro Simple | 1,180,920 | Validada |
 | Metro Desglosada | 1,192,230 | Validada |
 
-Pipeline:
+Granularidades:
 
-`RAW → STAGING → TYPED → CLEAN → VALIDACIÓN`
+```text
+Simple:
+fecha × linea × estacion
 
-Estado:
+Desglosada:
+fecha × linea × estacion × tipo_pago
+```
 
-**Baseline Metro validado.**
+Metro constituye el baseline técnico del proyecto.
+
+---
 
 ### Metrobús
 
 Estado:
 
-**Pipeline individual validado.**
+```text
+PIPELINE INDIVIDUAL:
+VALIDADO
+```
 
 Fuentes:
 
-| Recurso | Registros | Columnas | Cobertura |
-|---|---:|---:|---|
-| Simple | 54,159 | 5 | 2005-07-26 a 2026-09-30 |
-| Desglosada | 29,386 | 6 | 2021-01-01 a 2026-09-30 |
-
-Pipeline:
-
-`RAW → STAGING → PERFILADO → TYPED → CLEAN → VALIDACIÓN`
-
-Conteos por capa:
-
-| Capa | Simple | Desglosada |
+| Recurso | Registros | Columnas |
 |---|---:|---:|
-| STAGING | 54,159 | 29,386 |
-| TYPED | 54,159 | 29,386 |
-| CLEAN | 54,159 | 29,386 |
+| Simple | 54,159 | 5 |
+| Desglosada | 29,386 | 6 |
 
-Pérdida de registros:
-
-`0`
-
-Granularidades validadas:
+Granularidades:
 
 ```text
 Simple:
@@ -162,204 +207,308 @@ Desglosada:
 fecha × linea × tipo_pago
 ```
 
-Hallazgos principales:
-
-- 17,227 literales `NaN` en Simple.
-- `NaN` no se interpreta como cero.
-- En TYPED/CLEAN se representa mediante `NULL`.
-- 57 valores decimales válidos preservados en cada recurso mediante `NUMERIC`.
-- 0 duplicados exactos.
-- 0 colisiones de granularidad.
-- 7 líneas lógicas después de homologación.
-- `Prepago` y `Gratuidad` como categorías de `tipo_pago`.
-- 3,000 posibles outliers IQR en Simple.
-- 1,090 posibles outliers IQR en Desglosada.
-- Ningún outlier fue eliminado.
-
-En el periodo común:
+Pérdida entre STAGING, TYPED y CLEAN:
 
 ```text
-2021-01-01 → 2026-09-30
+0
 ```
 
-se validaron:
+Los valores `NaN` del recurso Simple se preservan semánticamente como ausencia de dato y no como cero.
 
-```text
-14,693 claves comparables
-14,693 coincidencias exactas
-0 diferencias
-```
+---
 
-cumpliéndose:
-
-```text
-Simple.afluencia
-=
-SUM(Desglosada.afluencia)
-```
-
-para las claves comparables `fecha × linea`.
-
-Los archivos RAW continúan en:
-
-`raw/metrobus/`
-
-y permanecen excluidos de Git.
-
-Metadatos:
-
-`metadata/metrobus/`
-
-Contrato:
-
-`../docs/contrato_datos_metrobus.md`
-
-Checkpoint:
-
-`../docs/checkpoint_metrobus.md`
-
-Metrobús todavía no se encuentra integrado físicamente con Metro.
-
-### Checkpoint de compatibilidad Metro ↔ Metrobús
-
-El análisis de compatibilidad entre ambos sistemas fue completado.
+### RTP
 
 Estado:
 
-**APROBADO CON RESTRICCIONES**
-
-La evaluación se realizó sin modificar los datasets RAW ni las capas individuales validadas de Metro y Metrobús.
-
-Ventana temporal común validada:
-
 ```text
-2021-01-01 → 2026-07-31
+PIPELINE INDIVIDUAL:
+VALIDADO
 ```
 
-Granularidad multisistema preliminar:
+La dimensión operacional respaldada por la fuente es:
 
 ```text
-fecha × sistema × linea
+servicio
 ```
 
-Resultados de la representación lógica evaluada:
+Dentro del contrato multisistema:
 
 ```text
-Metro:       24,456 claves fecha × linea
-Metrobús:    14,266 claves fecha × linea
-
-Total:       38,722 registros
-Claves:      38,722
-Duplicados:       0
-NULL:             0
-Fechas:       2,038
+unidad_operativa = servicio
 ```
 
-La igualdad entre registros y claves distintas demuestra que no existen colisiones en la combinación preliminar:
+RTP mantiene restricciones de calidad conocidas que no fueron corregidas artificialmente.
+
+En la ventana multisistema común existen:
 
 ```text
-fecha × sistema × linea
+223 claves con restricción
 ```
 
-durante la ventana temporal evaluada.
-
-#### Reconciliación interna de Metro
-
-También se comprobó la relación entre Metro Simple y Metro Desglosada durante:
+correspondientes a:
 
 ```text
-2021-01-01 → 2026-07-31
+92  → COLISION
+131 → AFLUENCIA_INCOMPLETA
 ```
 
-a la granularidad:
+Estas restricciones se mantienen explícitamente para conservar trazabilidad.
+
+---
+
+### Cablebús
+
+Estado:
 
 ```text
-fecha × linea × estacion
+PIPELINE INDIVIDUAL:
+VALIDADO
 ```
 
-Resultado:
+La dimensión operacional validada es:
 
 ```text
-Claves comparables:      397,410
-Coincidencias exactas:   397,410
-Solo Simple:                   0
-Solo Desglosada:               0
-Diferencias:                   0
-Máxima diferencia:             0
+linea
 ```
 
-Por tanto:
+Dentro del contrato multisistema:
 
 ```text
-Metro Simple.afluencia
-=
-SUM(Metro Desglosada.afluencia)
+unidad_operativa = linea
 ```
 
-para todas las claves comparables de la ventana analizada.
+Cablebús no introduce nuevas restricciones de calidad en el candidato multisistema vigente.
 
-#### Reglas derivadas del checkpoint
+---
 
-- `sistema` debe formar parte obligatoria de cualquier futura clave multisistema.
-- `linea` no identifica globalmente una entidad por sí sola.
-- `estacion` permanece como nivel de detalle específico de Metro.
-- `tipo_pago` permanece como nivel de análisis adicional.
-- Los valores `NULL` no deben transformarse a cero.
-- Los ceros se conservan como observaciones válidas salvo evidencia contraria.
-- Los outliers no se eliminan automáticamente.
-- Las colisiones y banderas de calidad deben conservar trazabilidad hacia su sistema de origen.
-- La futura medida común de afluencia deberá admitir `NUMERIC`.
-- Las granularidades nativas de los sistemas deben preservarse.
+### Trolebús
 
-#### Estado de `processed/`
+Estado:
 
-El checkpoint fue realizado únicamente mediante consultas SQL de lectura.
+```text
+PIPELINE INDIVIDUAL:
+VALIDADO
+```
 
-No se creó ningún dataset físico multisistema.
+Pipeline individual:
 
-No se materializó ninguna tabla integrada.
+```text
+STAGING: 65,013
+TYPED:   65,013
+CLEAN:   65,013
+```
 
-Por tanto, la carpeta:
+Pérdida:
+
+```text
+0
+```
+
+La dimensión operacional validada es:
+
+```text
+linea
+```
+
+Dentro del contrato multisistema:
+
+```text
+unidad_operativa = linea
+```
+
+Trolebús no introduce nuevas restricciones de calidad en el candidato multisistema vigente.
+
+---
+
+### Tren Ligero
+
+Estado:
+
+```text
+PIPELINE INDIVIDUAL:
+VALIDADO
+```
+
+Conteos:
+
+```text
+STAGING: 3,530
+TYPED:   3,530
+CLEAN:   3,530
+```
+
+Pérdida:
+
+```text
+0
+```
+
+Cobertura individual:
+
+```text
+2022-01-01 → 2026-10-31
+```
+
+Fechas distintas:
+
+```text
+1,765
+```
+
+Granularidad individual:
+
+```text
+fecha × tipo_pago
+```
+
+Tipos de pago:
+
+```text
+Gratuidad
+Prepago
+```
+
+La fuente física no contiene:
+
+```text
+linea
+servicio
+unidad_operativa
+```
+
+Por tanto, el pipeline individual tampoco crea artificialmente dichos campos.
+
+Para la capa conceptual de integración se validó:
+
+```text
+sistema = Tren Ligero
+unidad_operativa = Sistema completo
+```
+
+con procedencia:
+
+```text
+DERIVADA PARA INTEGRACIÓN
+```
+
+Esta dimensión no representa una columna publicada por la fuente.
+
+---
+
+## Estado del contrato multisistema
+
+El contrato conceptual vigente es:
+
+```text
+fecha × sistema × unidad_operativa
+```
+
+Mapeo:
+
+```text
+Metro
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+Metrobús
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+RTP
+→ unidad_operativa = servicio
+→ origen = FUENTE
+
+Cablebús
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+Trolebús
+→ unidad_operativa = linea
+→ origen = FUENTE
+
+Tren Ligero
+→ unidad_operativa = Sistema completo
+→ origen = DERIVADA PARA INTEGRACIÓN
+```
+
+Ventana temporal estrictamente común:
+
+```text
+2022-01-01 → 2026-07-31
+```
+
+Fechas:
+
+```text
+1,673
+```
+
+Candidato conceptual:
+
+```text
+Metro:          20,076
+Metrobús:       11,711
+RTP:            13,382
+Cablebús:        3,803
+Trolebús:       20,199
+Tren Ligero:     1,673
+----------------------
+Total:          70,844
+```
+
+Control global:
+
+```text
+Registros:                  70,844
+Claves distintas:           70,844
+Claves duplicadas:               0
+Claves con restricción:        223
+```
+
+Las 223 restricciones de calidad pertenecen exclusivamente a RTP.
+
+Estado:
+
+```text
+APROBADO CON RESTRICCIONES
+```
+
+---
+
+## Estado de `processed/`
+
+Todavía no se ha materializado un dataset físico multisistema definitivo.
+
+La carpeta:
 
 ```text
 processed/
 ```
 
-debe continuar reservada hasta completar:
+debe continuar reservada.
+
+La secuencia vigente es:
 
 ```text
-RTP
+6 PIPELINES INDIVIDUALES VALIDADOS
 ↓
-Cablebús
-↓
-Trolebús
-↓
-Tren Ligero
+6 SISTEMAS EVALUADOS CONTRA EL CONTRATO
 ↓
 CHECKPOINT MULTISISTEMA FINAL
+↓
+INTEGRACIÓN FÍSICA MULTISISTEMA
+↓
+PROCESSED
+↓
+MODELO DIMENSIONAL
+↓
+OLAP
 ```
 
-Solo después deberá evaluarse la generación de datasets analíticos multisistema persistentes.
+Por tanto, todavía no debe generarse un CSV multisistema definitivo únicamente para adelantar la integración.
 
-Script del checkpoint:
-
-```text
-../sql/quality/compatibilidad/01_compatibilidad_metro_metrobus.sql
-```
-
-Documento completo:
-
-```text
-../docs/checkpoint_compatibilidad_metro_metrobus.md
-```
-
-Siguiente iteración:
-
-```text
-RTP
-```
-
-RTP deberá completar su pipeline individual antes de evaluarse contra el contrato multisistema preliminar.
+Los artefactos de compatibilidad actuales son evaluaciones reproducibles y no una integración física.
 
 ---
 

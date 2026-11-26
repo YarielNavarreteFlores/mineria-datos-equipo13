@@ -8,22 +8,26 @@ Equipo 13 — Licenciatura en Ciencia de Datos, ESCOM-IPN.
 
 ## Estado actual
 
-El proyecto se encuentra en la fase de **Preparación de Datos de CRISP-DM**, con cinco sistemas de transporte ya caracterizados mediante pipelines individuales reproducibles:
+El proyecto se encuentra en la fase de **Preparación de Datos de CRISP-DM**, con seis sistemas de transporte caracterizados mediante pipelines individuales reproducibles:
 
 - Metro;
 - Metrobús;
 - RTP;
 - Cablebús;
-- Trolebús.
+- Trolebús;
+- Tren Ligero.
+
+Los seis pipelines individuales se encuentran validados.
 
 También se completaron los siguientes checkpoints de compatibilidad:
 
 - Metro ↔ Metrobús;
 - RTP ↔ contrato multisistema preliminar;
 - Cablebús ↔ contrato multisistema preliminar;
-- Trolebús ↔ contrato multisistema preliminar.
+- Trolebús ↔ contrato multisistema preliminar;
+- Tren Ligero ↔ contrato multisistema preliminar.
 
-El contrato analítico multisistema preliminar vigente es:
+El contrato analítico multisistema vigente es:
 
 ```text
 fecha × sistema × unidad_operativa
@@ -34,21 +38,38 @@ Mapeo actualmente respaldado por evidencia:
 ```text
 Metro
 → unidad_operativa = linea
+→ origen = FUENTE
 
 Metrobús
 → unidad_operativa = linea
+→ origen = FUENTE
 
 RTP
 → unidad_operativa = servicio
+→ origen = FUENTE
 
 Cablebús
 → unidad_operativa = linea
+→ origen = FUENTE
 
 Trolebús
 → unidad_operativa = linea
+→ origen = FUENTE
+
+Tren Ligero
+→ unidad_operativa = Sistema completo
+→ origen = DERIVADA PARA INTEGRACIÓN
 ```
 
-La ventana temporal estrictamente común actualmente validada para los cinco sistemas es:
+Para Tren Ligero:
+
+```text
+unidad_operativa = Sistema completo
+```
+
+es una abstracción analítica derivada exclusivamente para integración y no una columna física publicada por la fuente.
+
+La ventana temporal estrictamente común validada para los seis sistemas es:
 
 ```text
 2022-01-01 → 2026-07-31
@@ -60,41 +81,56 @@ con:
 1,673 fechas distintas
 ```
 
-El candidato conceptual de cinco sistemas contiene:
+El candidato conceptual de seis sistemas contiene:
 
 ```text
-Metro:        20,076 registros
-Metrobús:     11,711 registros
-RTP:          13,382 registros
-Cablebús:      3,803 registros
-Trolebús:     20,199 registros
+Metro:          20,076 registros
+Metrobús:       11,711 registros
+RTP:            13,382 registros
+Cablebús:        3,803 registros
+Trolebús:       20,199 registros
+Tren Ligero:     1,673 registros
 ```
 
 Resultado global:
 
 ```text
-Registros totales:        69,171
-Claves distintas:         69,171
+Registros totales:        70,844
+Claves distintas:         70,844
 Claves duplicadas:             0
 Afluencias NULL:             223
 Claves con restricción:      223
 ```
 
-Las 223 restricciones pertenecen exclusivamente a RTP:
+Las 223 restricciones de calidad pertenecen exclusivamente a RTP:
 
 ```text
 92  → COLISION
 131 → AFLUENCIA_INCOMPLETA
 ```
 
-Cablebús y Trolebús no introdujeron restricciones nuevas.
+Cablebús, Trolebús y Tren Ligero no introducen nuevas restricciones de calidad.
 
-Trolebús aporta:
+Tren Ligero aporta:
 
 ```text
-20,199 claves
-20,199 OK
-0 restricciones
+1,673 claves
+1,673 estructuralmente OK
+0 NULL
+0 duplicadas
+0 restricciones de calidad
+```
+
+Su compatibilidad se clasifica como:
+
+```text
+APROBADA CON RESTRICCIONES
+```
+
+debido exclusivamente a la restricción semántica asociada con:
+
+```text
+unidad_operativa = Sistema completo
 ```
 
 Por tanto, el estado actual del contrato multisistema es:
@@ -103,12 +139,20 @@ Por tanto, el estado actual del contrato multisistema es:
 APROBADO CON RESTRICCIONES
 ```
 
-La integración física multisistema continúa pendiente.
-
-El siguiente sistema que debe estudiarse es:
+La clave conceptual:
 
 ```text
-Tren Ligero
+fecha × sistema × unidad_operativa
+```
+
+permanece única para los seis sistemas evaluados.
+
+La integración física multisistema continúa pendiente.
+
+El siguiente bloque técnico es:
+
+```text
+CHECKPOINT MULTISISTEMA FINAL
 ```
 
 ### Estado de iteraciones
@@ -120,12 +164,11 @@ Tren Ligero
 | RTP | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Cablebús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Trolebús | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Tren Ligero | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ | ⚪ |
+| Tren Ligero | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 **Leyenda**
 
 - ✅ Validado.
-- ⚪ Pendiente.
 
 ### Iteración 1 — STC Metro
 
@@ -1619,94 +1662,264 @@ La integración física multisistema continúa pendiente.
 
 ---
 
-## Próximo objetivo
+## Cierre de la Iteración 6 — Tren Ligero
 
-### Iteración 6 — Tren Ligero
+Tren Ligero completó su pipeline individual y su evaluación formal contra el contrato multisistema vigente.
 
-El siguiente sistema que debe incorporarse al proceso de preparación de datos es:
+Estado del pipeline individual:
 
 ```text
-Tren Ligero
+PIPELINE INDIVIDUAL TREN LIGERO: VALIDADO
 ```
 
-Los pipelines individuales actualmente validados son:
+Checkpoint individual:
 
 ```text
-Metro
-Metrobús
-RTP
-Cablebús
-Trolebús
+CHECKPOINT INDIVIDUAL TREN LIGERO: APROBADO
 ```
 
-Tren Ligero deberá comenzar nuevamente desde comprensión de la fuente oficial.
-
-No deberá construirse como una adaptación automática de:
+Registros:
 
 ```text
-Metro
-Metrobús
-RTP
-Cablebús
-Trolebús
+STAGING: 3,530
+TYPED:   3,530
+CLEAN:   3,530
 ```
 
-Antes de proponer transformaciones deberán comprobarse directamente:
+Pérdida:
 
 ```text
-estructura física
-cobertura temporal
-granularidad
-dominio de unidades operativas
-tipo de pago, si existe
-valores faltantes
-ceros
-negativos
-decimales
-duplicados
-colisiones
-outliers
-consistencia temporal
-metadatos oficiales
+0
 ```
 
-No debe asumirse previamente qué atributo de Tren Ligero corresponde a:
+Granularidad individual:
 
 ```text
+fecha × tipo_pago
+```
+
+Cobertura individual:
+
+```text
+2022-01-01 → 2026-10-31
+```
+
+con:
+
+```text
+1,765 fechas distintas
+```
+
+Dominio de tipo de pago:
+
+```text
+Gratuidad
+Prepago
+```
+
+La fuente no contiene:
+
+```text
+linea
+servicio
 unidad_operativa
 ```
 
-La equivalencia deberá demostrarse mediante los datos, el diccionario y los metadatos oficiales.
+y el pipeline individual no creó artificialmente esas dimensiones.
 
 ---
 
-### Evaluación posterior
+### Checkpoint Tren Ligero ↔ contrato multisistema
 
-Cuando el pipeline individual de Tren Ligero quede validado deberá evaluarse contra:
+La ventana estrictamente común de los seis sistemas permanece:
+
+```text
+2022-01-01 → 2026-07-31
+```
+
+con:
+
+```text
+1,673 fechas distintas
+```
+
+Dentro de esa ventana Tren Ligero contiene:
+
+```text
+3,346 registros detallados
+1,673 fechas
+2 tipos de pago
+0 NULL
+0 colisiones
+0 duplicados
+```
+
+La agregación:
+
+```text
+SUM(afluencia)
+GROUP BY fecha
+```
+
+produce:
+
+```text
+1,673 registros
+1,673 claves distintas
+0 claves duplicadas
+0 restricciones de calidad
+```
+
+La preservación de afluencia fue comprobada:
+
+```text
+Afluencia origen:     128,678,219.683676
+Afluencia candidato:  128,678,219.683676
+Diferencia:                           0
+```
+
+También se verificaron:
+
+```text
+1,673 fechas comparadas
+0 fechas con diferencia
+```
+
+Para su representación dentro del contrato multisistema se validó:
+
+```text
+Tren Ligero
+→ unidad_operativa = Sistema completo
+→ origen = DERIVADA PARA INTEGRACIÓN
+```
+
+Esta unidad no constituye una columna física de la fuente.
+
+Por tanto:
+
+```text
+COMPATIBILIDAD TREN LIGERO
+↔ CONTRATO MULTISISTEMA
+
+APROBADA CON RESTRICCIONES
+```
+
+La restricción es semántica y no de calidad.
+
+---
+
+## Contrato multisistema vigente
+
+El contrato continúa siendo:
 
 ```text
 fecha × sistema × unidad_operativa
 ```
 
-El objetivo será determinar si Tren Ligero puede incorporarse al contrato vigente o si requiere una nueva generalización semántica.
+Mapeo validado:
 
-No deben modificarse artificialmente los pipelines previamente validados para adaptar Tren Ligero.
+```text
+Metro
+→ unidad_operativa = linea
+
+Metrobús
+→ unidad_operativa = linea
+
+RTP
+→ unidad_operativa = servicio
+
+Cablebús
+→ unidad_operativa = linea
+
+Trolebús
+→ unidad_operativa = linea
+
+Tren Ligero
+→ unidad_operativa = Sistema completo
+```
+
+Procedencia de la dimensión:
+
+```text
+Metro          → FUENTE
+Metrobús       → FUENTE
+RTP            → FUENTE
+Cablebús       → FUENTE
+Trolebús       → FUENTE
+Tren Ligero    → DERIVADA PARA INTEGRACIÓN
+```
+
+Dentro de la ventana común:
+
+```text
+Metro:          20,076 registros
+Metrobús:       11,711 registros
+RTP:            13,382 registros
+Cablebús:        3,803 registros
+Trolebús:       20,199 registros
+Tren Ligero:     1,673 registros
+```
+
+Resultado:
+
+```text
+70,844 registros
+70,844 claves distintas
+0 claves duplicadas
+1,673 fechas distintas
+223 claves con restricción de calidad
+```
+
+Las 223 restricciones pertenecen exclusivamente a RTP.
+
+El estado global continúa siendo:
+
+```text
+APROBADO CON RESTRICCIONES
+```
+
+La medida multisistema futura deberá utilizar un dominio:
+
+```text
+NUMERIC
+```
+
+para preservar sin pérdida los valores enteros y decimales de todos los sistemas.
+
+La integración física multisistema continúa pendiente.
 
 ---
 
-### Restricciones vigentes
+## Próximo objetivo
+
+Los seis sistemas definidos actualmente dentro del alcance han completado:
+
+```text
+pipeline individual
++
+checkpoint individual
++
+evaluación de compatibilidad
+```
+
+El siguiente bloque técnico es:
+
+```text
+CHECKPOINT MULTISISTEMA FINAL
+```
+
+Su objetivo será cerrar formalmente el contrato común antes de construir una integración física.
 
 Todavía no debe construirse:
 
 ```text
-integración física multisistema definitiva
-tabla de hechos definitiva
+tabla de hechos multisistema definitiva
 modelo dimensional definitivo
 dataset multisistema definitivo en processed/
 cubo OLAP definitivo
 ```
 
-La integración física deberá realizarse únicamente después de completar los sistemas pendientes y cerrar el checkpoint multisistema final.
+hasta cerrar dicho checkpoint.
 
 ---
 
@@ -1735,9 +1948,13 @@ Tren Ligero
 ↓
 Checkpoint Tren Ligero ↔ contrato multisistema
 ↓
-Checkpoint multisistema final
+6 SISTEMAS INDIVIDUALES VALIDADOS
+↓
+CHECKPOINT MULTISISTEMA FINAL
 ↓
 Integración física multisistema
+↓
+Base histórica
 ↓
 Modelo dimensional
 ↓
@@ -1757,9 +1974,9 @@ Evaluación
 | Fase | Estado |
 |---|---|
 | Comprensión del negocio | Avanzada |
-| Comprensión de los datos | Avanzada para Metro, Metrobús, RTP, Cablebús y Trolebús; Tren Ligero es la siguiente iteración |
-| Preparación de datos | Pipelines individuales de Metro, Metrobús, RTP, Cablebús y Trolebús validados |
-| Integración multisistema | Contrato conceptual `fecha × sistema × unidad_operativa` validado para cinco sistemas; 69,171 claves únicas; estado global APROBADO CON RESTRICCIONES; integración física pendiente |
+| Comprensión de los datos | Avanzada para Metro, Metrobús, RTP, Cablebús, Trolebús y Tren Ligero |
+| Preparación de datos | Pipelines individuales de los seis sistemas validados |
+| Integración multisistema | Contrato conceptual `fecha × sistema × unidad_operativa` validado para seis sistemas; 70,844 claves únicas; 0 duplicadas; 1,673 fechas comunes; 223 claves con restricción de calidad; estado global APROBADO CON RESTRICCIONES; integración física pendiente |
 | Modelado | Pendiente |
 | Evaluación | Pendiente |
 | Despliegue académico | Pendiente |
