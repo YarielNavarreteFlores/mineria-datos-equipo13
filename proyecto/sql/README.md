@@ -956,105 +956,29 @@ Estado global:
 APROBADO CON RESTRICCIONES
 ```
 
-La integración física multisistema continúa:
+## Integración física y base histórica
 
-```text
-PENDIENTE
-```
+El checkpoint multisistema final quedó validado para los seis sistemas. PostgreSQL contiene dos tablas con clave primaria `(fecha, sistema, unidad_operativa)`.
 
-El modelo dimensional continúa:
+| Tabla | Cobertura | Implementación |
+|---|---|---|
+| `proyecto.afluencia_diaria_multisistema` | 70,844 claves en la ventana común del 2022-01-01 al 2026-07-31 | [Scripts de integración multisistema](integration/multisistema/) |
+| `proyecto.afluencia_diaria_historica` | 168,053 claves en toda la historia disponible, incluidas las de la ventana común | [Scripts de la base histórica](integration/historico/) |
 
-```text
-PENDIENTE
-```
+### Orden de los scripts históricos
 
-No debe construirse todavía una tabla de hechos multisistema definitiva antes de cerrar el checkpoint multisistema final.
+| Script | Función |
+|---|---|
+| `01_inventario_cobertura_historica.sql` | Identifica la cobertura de cada sistema y recurso dentro y fuera de la ventana común. |
+| `02_candidato_historico.sql` | Construye el candidato histórico y comprueba los estados de calidad y la precisión de la afluencia. |
+| `03_reconciliar_ventana_comun.sql` | Compara el candidato con la tabla multisistema dentro de la ventana común. |
+| `04_reconciliar_fuera_de_ventana.sql` | Contrasta las claves, la afluencia y la calidad fuera de la ventana común. |
+| `05_crear_afluencia_diaria_historica.sql` | Crea la tabla histórica con su clave primaria y sus restricciones. |
+| `06_carga_inicial_historica.sql` | Realiza la carga inicial sobre el destino vacío. |
+| `07_validar_tabla_historica.sql` | Compara la tabla cargada con el candidato histórico por sistema. |
 
----
+Para verificar una base ya cargada, se utiliza el script `07_validar_tabla_historica.sql`. En la carga validada, los seis sistemas presentaron cero claves faltantes o sobrantes y cero diferencias de afluencia, calidad o procedencia. De las 168,053 claves, 150,572 tienen afluencia y 17,481 conservan `NULL`. Las reglas por sistema se describen en la [documentación de la base histórica](../docs/base_historica_multisistema.md).
 
 # Siguiente bloque del proyecto
 
-Las seis iteraciones individuales definidas dentro del alcance actual ya fueron completadas:
-
-```text
-Iteración 1 — Metro
-VALIDADA
-
-Iteración 2 — Metrobús
-VALIDADA
-
-Iteración 3 — RTP
-VALIDADA
-
-Iteración 4 — Cablebús
-VALIDADA
-
-Iteración 5 — Trolebús
-VALIDADA
-
-Iteración 6 — Tren Ligero
-VALIDADA
-```
-
-También fueron evaluadas sus compatibilidades con el contrato multisistema.
-
-El siguiente bloque técnico corresponde a:
-
-```text
-CHECKPOINT MULTISISTEMA FINAL
-```
-
-Su objetivo será cerrar formalmente:
-
-```text
-granularidad común
-+
-clave global
-+
-ventana temporal común
-+
-semántica de unidad_operativa
-+
-dominio común de afluencia
-+
-reglas de calidad
-+
-restricciones conocidas
-```
-
-antes de materializar una integración física.
-
-El orden vigente es:
-
-```text
-6 PIPELINES INDIVIDUALES VALIDADOS
-↓
-5 CHECKPOINTS DE COMPATIBILIDAD COMPLETADOS
-↓
-CHECKPOINT MULTISISTEMA FINAL
-↓
-INTEGRACIÓN FÍSICA MULTISISTEMA
-↓
-BASE HISTÓRICA
-↓
-MODELO DIMENSIONAL
-↓
-OLAP
-↓
-EDA CONSOLIDADO
-↓
-MINERÍA DE DATOS
-↓
-EVALUACIÓN
-```
-
-Todavía no debe implementarse:
-
-```text
-tabla de hechos multisistema definitiva
-dataset multisistema definitivo
-modelo dimensional definitivo
-cubo OLAP definitivo
-```
-
-hasta cerrar el checkpoint multisistema final.
+La siguiente etapa es diseñar el modelo dimensional a partir de la granularidad validada. Después siguen OLAP, el análisis exploratorio consolidado, la minería de datos y la evaluación.

@@ -3320,8 +3320,10 @@ Nunca se debe mantener una regla del README si contradice una instrucción poste
 | Comprensión de datos Metrobús | ✅ Avanzada |
 | ETL Metro | ✅ Baseline RAW → STAGING → TYPED → CLEAN validado |
 | ETL Metrobús | ✅ RAW → STAGING → PERFILADO → TYPED → CLEAN → VALIDACIÓN |
-| Compatibilidad Metro ↔ Metrobús | 🟡 Siguiente checkpoint |
-| Integración multisistema | 🟡 En desarrollo |
+| Compatibilidad Metro ↔ Metrobús | ✅ Validada |
+| Checkpoint multisistema final | ✅ Validado para los seis sistemas |
+| Integración física en la ventana común | ✅ 70,844 claves en `proyecto.afluencia_diaria_multisistema` |
+| [Base histórica multisistema](proyecto/docs/base_historica_multisistema.md) | ✅ 168,053 claves validadas en `proyecto.afluencia_diaria_historica`, de las cuales 150,572 tienen afluencia y 17,481 conservan `NULL` |
 | Modelo dimensional / OLAP | ⚪ Pendiente |
 | Modelado | ⚪ Pendiente |
 | Evaluación | ⚪ Pendiente |

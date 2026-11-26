@@ -147,13 +147,16 @@ fecha × sistema × unidad_operativa
 
 permanece única para los seis sistemas evaluados.
 
-La integración física multisistema continúa pendiente.
+El equipo completó el checkpoint final de los seis sistemas y validó dos tablas en PostgreSQL. Ambas utilizan la clave `(fecha, sistema, unidad_operativa)`.
 
-El siguiente bloque técnico es:
+| Tabla | Cobertura | Resultado validado |
+|---|---|---|
+| `proyecto.afluencia_diaria_multisistema` | Ventana común del 2022-01-01 al 2026-07-31 | 70,844 claves, de las cuales 223 conservan afluencia `NULL` por restricciones de calidad en RTP. |
+| `proyecto.afluencia_diaria_historica` | Historia disponible de cada sistema | 168,053 claves en total. Incluye las 70,844 de la ventana común y 97,209 adicionales. |
 
-```text
-CHECKPOINT MULTISISTEMA FINAL
-```
+La tabla histórica contiene 150,572 claves con afluencia y 17,481 con `NULL`. Estas últimas corresponden a 17,227 claves de Metrobús anteriores al primer valor conocido de su línea, 31 colisiones de Metro y 223 restricciones de RTP. La conciliación con el candidato histórico confirmó que en los seis sistemas coinciden las claves, la afluencia, el estado de calidad y la procedencia de la unidad operativa.
+
+La siguiente etapa es el diseño del modelo dimensional. Las reglas de integración y los resultados de validación se encuentran en la [documentación de la base histórica](docs/base_historica_multisistema.md).
 
 ### Estado de iteraciones
 

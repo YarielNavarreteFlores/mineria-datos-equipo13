@@ -478,37 +478,16 @@ APROBADO CON RESTRICCIONES
 
 ## Estado de `processed/`
 
-Todavía no se ha materializado un dataset físico multisistema definitivo.
+La integración de los seis sistemas está materializada en PostgreSQL. Ambas tablas tienen una fila por combinación de `fecha`, `sistema` y `unidad_operativa`.
 
-La carpeta:
+| Tabla | Uso | Cobertura validada |
+|---|---|---|
+| `proyecto.afluencia_diaria_multisistema` | Comparar los seis sistemas durante la ventana común del 2022-01-01 al 2026-07-31. | 70,844 claves. |
+| `proyecto.afluencia_diaria_historica` | Consultar toda la historia disponible de cada sistema. | 168,053 claves, incluidas las 70,844 de la ventana común. |
 
-```text
-processed/
-```
+En la tabla histórica, 150,572 claves tienen afluencia conocida y 17,481 conservan `NULL`. La columna `estado_calidad` identifica el motivo. Para calcular indicadores o preparar datos de entrenamiento, un `NULL` representa una afluencia desconocida y debe distinguirse de un cero observado.
 
-debe continuar reservada.
-
-La secuencia vigente es:
-
-```text
-6 PIPELINES INDIVIDUALES VALIDADOS
-↓
-6 SISTEMAS EVALUADOS CONTRA EL CONTRATO
-↓
-CHECKPOINT MULTISISTEMA FINAL
-↓
-INTEGRACIÓN FÍSICA MULTISISTEMA
-↓
-PROCESSED
-↓
-MODELO DIMENSIONAL
-↓
-OLAP
-```
-
-Por tanto, todavía no debe generarse un CSV multisistema definitivo únicamente para adelantar la integración.
-
-Los artefactos de compatibilidad actuales son evaluaciones reproducibles y no una integración física.
+La carpeta `processed/` queda reservada para archivos derivados cuyo propósito analítico esté documentado. Para consultar las tablas validadas se puede trabajar directamente en PostgreSQL. Las reglas de construcción y la evidencia de conciliación están en la [documentación de la base histórica](../docs/base_historica_multisistema.md).
 
 ---
 
