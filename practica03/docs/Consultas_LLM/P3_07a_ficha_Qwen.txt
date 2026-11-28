@@ -1,0 +1,10 @@
+﻿Consulta 1 de 3
+Modelo: qwen2.5:7b
+Fecha: 2026-11-20 14:05:42 -06:00
+Motivo de finalización: stop
+Caracteres de respuesta: 8513
+Prompt: P3_07_prompt_comun.txt
+Modelos instalados e identificadores:
+NAME          ID              SIZE      MODIFIED       
+qwen2.5:7b    845dbda0ea48    4.7 GB    10 minutes ago    
+

@@ -1,0 +1,13 @@
+﻿Consulta 3 de 3
+Modelo: olmo2:7b
+Fecha: 2026-11-20 14:47:28 -06:00
+Motivo de finalización: stop
+Caracteres de respuesta: 5764
+Prompt: P3_07_prompt_comun.txt
+SHA256 del prompt: B70F0F1DA0D36F662D89AC218CAC11DB2998AC2B88706A68E40C359E4078C8FE
+Modelos instalados e identificadores:
+NAME                               ID              SIZE      MODIFIED       
+olmo2:7b                           4208d3b406db    4.5 GB    3 minutes ago     
+mistral:7b-instruct-v0.3-q4_K_M    6577803aa9a0    4.4 GB    23 minutes ago    
+qwen2.5:7b                         845dbda0ea48    4.7 GB    52 minutes ago    
+

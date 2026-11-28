@@ -1,0 +1,83 @@
+﻿**Selección de Estrella:**
+
+La estrella representa la singularidad en los datos y la importancia de cada fila como un punto único en el espacio. Cada fila contiene una historia única sobre un individuo y su interacción con el COVID-19, lo cual es fundamental para entender la naturaleza del pandemic.
+
+**Modelo Multidimensional:**
+
+**Familia de Datos:**
+
+- **COVID_Records**
+  - **id**: clave primaria
+  - **fecha_actualizacion**: fecha en que se registró el evento (timestamp)
+  - **origen**: fuente de información
+  - **sector**: área de contacto
+  - ** entidad_um**: unidad médica o entidad que realizó la monitoreo
+  - **municipio_um**: municipio donde ocurrió la monitoreo
+  - **clues**: datos específicos de la vigilancia
+  - **sexo**: género
+  **entidad_nac**: entidad nacional de nacimiento
+  **municipio_res**: municipio en el que vive el individuo
+  **localidad_res**: localidad donde se registró el individuo
+  **tipo_paciente**: tipo de paciente (susceptible, contagio confirmado, recuperado, etc.)
+  **fecha_ingreso**: fecha de ingreso al sistema de monitoreo
+  **fecha_sintomas**: fecha en que se sintió el primer síntoma
+  **fecha_def**: fecha de diagnóstico confirmado
+  **intubado**: si la patienta fue intubada
+  **neumonia**: presencia de neumonia
+  **edad**: edad del paciente
+  **nacionalidad**: nacionalidad del paciente
+  **embarazo**: si el paciente estaba embarazado
+  **habla_lengua_indig**: si habla una lengua indígena
+  **indigena**: si el individuo es indígena
+  **diabetes**: presencia de diabetes
+  **epoc**: etapa del ciclo viral (infección, replicación, etc.)
+  **asma**: presencia de asma
+  **inmusupr**: presencia de enfermedad respiratoria no bacterial
+  **hipertensión**: hipertensión arterial
+  **otra_com**: otros problemas de salud
+  **cardiovascular**: problemas cardiovasculares
+  **obesidad**: sobrepeso
+  **renal_cronica**: enfermedad renal crónica
+  **tabaquismo**: hábito tabáquico
+  **otro_caso**: otros casos que podrían afectar la clasificación del paciente
+  **toma_muestra_lab**: resultado de las pruebas de laboratorio
+  **resultado_lab**: diagnóstico obtenido a través de las pruebas
+  **toma_muestra_antigeno**: resultado de la prueba de antígeno
+  **resultado_antigeno**: presencia o ausencia de virus
+  **clasificacion_final**: clasificación del paciente basada en criterios clínicos
+  **fecha_resultado**: fecha en que se finalizó el seguimiento del paciente
+  **migrante**: si el paciente es migrante
+  **pais_nacionalidad**: nacionalidad del país de origen
+  **pais_origen**: país de origen del paciente
+  **ui**: valor de la unidad de incidencia (UI)
+  **anio_fuente**: año en que la fuente de datos fue recopilada
+
+**Relaciones y Jerarquías:**
+
+1. **Clave Foránea:** `municipio_res` y `pais_nacionalidad` se relacionan con la tabla **Municipios** y **Países**, respectivamente, para obtener los datos complementarios de estas entidades.
+2. **Jerarquía de Tiempo:** Se pueden organizar por **fecha_actualizacion**, desde más recientes a más antiguas, permitiendo estudiar las tendencias a lo largo del tiempo.
+3. **Jerarquía de Espacio:** Se pueden agrupar por **municipio_um** para analizar datos por área geográfica.
+4. **Tema:** Podemos agrupar por **tipo_paciente** para entender las estadísticas por categoría clínica.
+5. **Limites de Detalle:** Podemos limitar el análisis a pacientes intubados o a casos confirmados para obtener insights más específicos.
+
+**ETL:**
+
+El ETL (Extract, Transform, Load) puede ser implementado de la siguiente manera:
+
+- **Extract:** Realizar una extracción regular de los datos de la fuente 2022 y 2023 utilizando SQL SELECT directo o una funcionalidad de extracción de base de datos.
+- **Transform:** Utilizar procedimientos almacenados o funciones SQL para filtrar y transformar los datos, como eliminar nulos, standardizar formatos, asignar valor faltante (como municipio para los registros 999) basándose en reglas predefinidas, y agrupar datos según las jerarquías y temas descritos.
+- **Load:** Inociar los datos transformados en una base de datos de análisis o sistema de gestión de datos adecuado para permitir análisis y visualización.
+
+**Controles de Calidad:**
+
+- **Validación de Dados:** Usar restricciones SQL para asegurarse de que datos como **municipio_um**, **clues**, y **fecha_resultado** no estén vacíos.
+- **Validación de Entidades:** Revisar que **entidad_nac** y **municipio_res** coincidan con las tablas correspondientes para evitar inconsistencias.
+- **Control de Duplicidad:** Utilizar herramientas de deduplicación para manejar casos repetidos donde el **id** pueda ser similar o igual.
+
+**Pregunta Interdisciplinaria:**
+
+**¿Qué medida proporcional de la población total en cada municipio muestra una mayor incidencia de COVID-19 en comunidades con más densidad demográfica, teniendo en cuenta la información disponible en la tabla?** Esto cruce las dimensiones de geografía (municipios), demografía (nacionalidad y densidad poblacional implica) y salud pública (incidencia de COVID-19). Basándonos en las columnas **municipio_um**, **municipio_res**, **nacionalidad**, y estadísticas de casos confirmados (por ejemplo, medición del número de casos por 1000 habitantes), podríamos calcular esta medida para comparar entre diferentes municipios. 
+
+**Conclusiones Verificables vs. Hipótesis Pendientes:**
+
+Las conclusiones verificables incluirían las tendencias de casos confirmados por grupo de edad, por área geográfica, y por periodos de tiempo específicos. Las hipótesis pendientes podrían investigar si la densidad demográfica influye negativamente en la capacidad de respuesta de salud pública en ciertas áreas, y si hay diferencias significativas entre comunidades indígenas y no indígenas en términos de infección y hospitalización.

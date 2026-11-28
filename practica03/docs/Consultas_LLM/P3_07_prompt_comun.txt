@@ -1,0 +1,40 @@
+﻿Responde en español. Propón un modelo multidimensional en PostgreSQL para analizar
+la tabla covid_historica del Equipo 13. El objetivo es explicar qué ocurrió,
+cuándo, dónde y con qué características, a partir de registros de vigilancia
+epidemiológica de COVID-19.
+
+Evidencia verificada:
+- Hay 2,099,997 filas: 1,999,998 de la fuente 2022 y 99,999 de la fuente 2023.
+- id_registro tiene 2,099,997 valores distintos y cero nulos.
+- La fuente 2022 carece de municipio_um, clues y fecha_resultado.
+- En 2023, 82,283 de 99,999 registros carecen de fecha_resultado.
+- La residencia se valida con entidad_res y municipio_res juntos.
+- Hay 26 registros de 2022 con municipio 999 reconocido como NO ESPECIFICADO.
+- Un registro de 2022 tiene la pareja (08, 113), ausente del catálogo entregado.
+  La entidad 08 es Chihuahua. El nombre del municipio queda por verificar.
+- En nacionalidad solo se observaron 1 = MEXICANA y 2 = EXTRANJERA.
+  El catálogo de este campo también admite 99 = NO ESPECIFICADO.
+
+Inventario completo de columnas:
+fecha_actualizacion, id_registro, origen, sector, entidad_um, municipio_um,
+clues, sexo, entidad_nac, entidad_res, municipio_res, localidad_res,
+tipo_paciente, fecha_ingreso, fecha_sintomas, fecha_def, intubado, neumonia,
+edad, nacionalidad, embarazo, habla_lengua_indig, indigena, diabetes, epoc,
+asma, inmusupr, hipertension, otra_com, cardiovascular, obesidad, renal_cronica,
+tabaquismo, otro_caso, toma_muestra_lab, resultado_lab, toma_muestra_antigeno,
+resultado_antigeno, clasificacion_final, fecha_resultado, migrante,
+pais_nacionalidad, pais_origen, uci, anio_fuente, archivo_fuente.
+
+Instrucciones:
+1. Elige estrella, copo de nieve o constelación y justifica tu elección.
+2. Define qué representa una fila de hechos, qué medidas usarías y cómo distinguirías
+   un registro de vigilancia de un caso confirmado.
+3. Presenta una tabla de origen y destino que cubra las 46 columnas.
+   Excluye localidad_res del modelo y conserva anio_fuente y archivo_fuente.
+4. Identifica tablas, claves primarias y foráneas, relaciones y redundancias.
+   Dibuja las jerarquías de tiempo y espacio. Explica los niveles, agrupaciones
+   temáticas y límites de detalle que permiten los datos.
+5. Describe el ETL y cómo conservarías los registros con información parcial,
+   incluyendo los 26 municipios no especificados y la pareja (08, 113).
+6. Propón controles de calidad y una pregunta que cruce tres dimensiones.
+   Distingue las conclusiones verificables de las hipótesis pendientes.

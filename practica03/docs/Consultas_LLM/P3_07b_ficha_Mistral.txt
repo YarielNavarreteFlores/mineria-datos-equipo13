@@ -1,0 +1,12 @@
+﻿Consulta 2 de 3
+Modelo: mistral:7b-instruct-v0.3-q4_K_M
+Fecha: 2026-11-20 14:26:51 -06:00
+Motivo de finalización: stop
+Caracteres de respuesta: 3538
+Prompt: P3_07_prompt_comun.txt
+SHA256 del prompt: B70F0F1DA0D36F662D89AC218CAC11DB2998AC2B88706A68E40C359E4078C8FE
+Modelos instalados e identificadores:
+NAME                               ID              SIZE      MODIFIED       
+mistral:7b-instruct-v0.3-q4_K_M    6577803aa9a0    4.4 GB    2 minutes ago     
+qwen2.5:7b                         845dbda0ea48    4.7 GB    32 minutes ago    
+
