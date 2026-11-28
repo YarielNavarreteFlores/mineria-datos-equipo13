@@ -2222,7 +2222,7 @@ Debe actualizarse cada vez que exista una nueva práctica.
 |---|---|---|---|---|
 | 1 | Definición del proyecto semestral | Directa | ✅ Entregada | `practica01/` |
 | 2 | Práctica 2 completada conforme a las instrucciones de la entrega | Relacionada con preparación, calidad, SQL y reproducibilidad| ✅ Entregada | `practica02/` |
-| 3 | Por definir | Por determinar | ⚪ Pendiente | — |
+| 3 | Modelo multidimensional y ETL | Diseño dimensional, migración y exploración de registros de COVID-19 | ✅ Entregada | [practica03/](practica03/) |
 | 4 | Por definir | Por determinar | ⚪ Pendiente | — |
 | 5 | Por definir | Por determinar | ⚪ Pendiente | — |
 | 6 | Por definir | Por determinar | ⚪ Pendiente | — |

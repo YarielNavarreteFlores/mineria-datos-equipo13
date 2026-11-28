@@ -1,0 +1,189 @@
+﻿### 1. Elegir el Modelo Multidimensional
+
+**Elegiré el modelo de estrella.** Este modelo es adecuado para esta situación porque:
+- **Sencillez:** La estructura de la estrella es fácil de entender y mantener.
+- **Relaciones Claras:** Permite una representación clara de las relaciones entre las tablas de hechos y dimensiones.
+- **Flexibilidad en la Análisis:** Facilita la realización de consultas complejas y el análisis multidimensional.
+
+### 2. Definición de Filas de Hechos y Medidas
+
+**Fila de Hechos:**
+- **id_registro** (PK): Único identificador del registro.
+- **fecha_resultado**: Fecha en que se obtuvo el resultado del examen.
+- **clasificacion_final**: Clasificación final del caso (confirmado, sospechoso, etc.).
+- **resultado_lab**: Resultado del laboratorio.
+- **resultado_antigeno**: Resultado del anticuerpo.
+- **uci**: Indicador de ingreso a UCI.
+- **edad**: Edad del paciente.
+- **sexo**: Genero del paciente.
+- **entidad_res**: Entidad de residencia.
+- **municipio_res**: Municipio de residencia.
+- **nacionalidad**: Nacionalidad del paciente.
+- **tipo_paciente**: Clasificación del tipo de paciente.
+- **fecha_ingreso**: Fecha de ingreso al hospital.
+- **fecha_sintomas**: Fecha de presentación de síntomas.
+- **fecha_def**: Fecha de defunción (si aplica).
+- **intubado**: Indicador de intubación.
+- **neumonia**: Indicador de neumonía.
+- **tabaquismo**: Indicador de tabaquismo.
+- **obesidad**: Indicador de obesidad.
+- **diabetes**: Indicador de diabetes.
+- **epoc**: Indicador de EPOC.
+- **asma**: Indicador de asma.
+- **inmusupr**: Indicador de inmunodepresión.
+- **hipertension**: Indicador de hipertensión.
+- **otra_com**: Otros comorbilidades.
+- **cardiovascular**: Indicador de enfermedad cardiovascular.
+- **renal_cronica**: Indicador de enfermedad renal crónica.
+- **embarazo**: Indicador de embarazo.
+- **habla_lengua_indig**: Indicador de habla de lengua indígena.
+- **indigena**: Indicador de origen indígena.
+
+**Medidas:**
+- **conteo**: Cantidad de casos por variable de interés (e.g., sexo, nacionalidad, tipo de paciente, etc.).
+- **promedio**: Promedio de edad.
+- **total_uci**: Total de casos que ingresaron a UCI.
+
+### 3. Tabla de Origen y Destino
+
+| **Origen** | **Destino** |
+|------------|-------------|
+| id_registro | id_registro |
+| origen     | origen      |
+| sector     | sector      |
+| entidad_um | entidad_um  |
+| municipio_um | municipio_um |
+| clues      | clues       |
+| sexo       | sexo        |
+| entidad_nac | entidad_nac |
+| entidad_res | entidad_res |
+| municipio_res | municipio_res |
+| localidad_res | (excluido)  |
+| tipo_paciente | tipo_paciente |
+| fecha_ingreso | fecha_ingreso |
+| fecha_sintomas | fecha_sintomas |
+| fecha_def | fecha_def   |
+| intubado   | intubado    |
+| neumonia   | neumonia    |
+| edad       | edad        |
+| nacionalidad | nacionalidad |
+| embarazo   | embarazo    |
+| habla_lengua_indig | habla_lengua_indig |
+| indigena   | indigena    |
+| diabetes   | diabetes    |
+| epoc       | epoc        |
+| asma       | asma        |
+| inmusupr   | inmusupr    |
+| hipertension | hipertension |
+| otra_com   | otra_com    |
+| cardiovascular | cardiovascular |
+| obesidad   | obesidad    |
+| renal_cronica | renal_cronica |
+| toma_muestra_lab | toma_muestra_lab |
+| resultado_lab | resultado_lab |
+| toma_muestra_antigeno | toma_muestra_antigeno |
+| resultado_antigeno | resultado_antigeno |
+| clasificacion_final | clasificacion_final |
+| fecha_resultado | fecha_resultado |
+| migrante   | migrante    |
+| pais_nacionalidad | pais_nacionalidad |
+| pais_origen | pais_origen |
+| uci        | uci         |
+| anio_fuente | anio_fuente |
+| archivo_fuente | archivo_fuente |
+
+### 4. Identificación de Tablas, Claves y Relaciones
+
+- **Tablas:**
+  - **DimFecha**: Contiene información sobre la fecha.
+  - **DimEntidadRes**: Contiene información sobre las entidades de residencia.
+  - **DimMunicipioRes**: Contiene información sobre los municipios de residencia.
+  - **DimSexo**: Contiene información sobre el sexo.
+  - **DimEdad**: Contiene información sobre la edad.
+  - **DimNacionalidad**: Contiene información sobre la nacionalidad.
+  - **DimTipoPaciente**: Contiene información sobre el tipo de paciente.
+  - **DimComorbilidades**: Contiene información sobre las comorbilidades.
+  - **DimClasificacionFinal**: Contiene información sobre la clasificación final.
+  - **DimResultadosLab**: Contiene información sobre los resultados del laboratorio.
+  - **DimResultadosAntigeno**: Contiene información sobre los resultados del anticuerpo.
+  - **DimTobaco**: Contiene información sobre el tabaquismo.
+  - **DimIndigena**: Contiene información sobre el origen indígena.
+  - **DimUci**: Contiene información sobre la UCI.
+  - **FHechosCovid**: Tabla de hechos que contiene la información principal.
+
+- **Claves Primarias y Foráneas:**
+  - **FHechosCovid:**
+    - `id_registro` (PK): Clave primaria.
+    - `fecha_resultado` (FK): Clave foránea a `DimFecha`.
+    - `entidad_res` (FK): Clave foránea a `DimEntidadRes`.
+    - `municipio_res` (FK): Clave foránea a `DimMunicipioRes`.
+    - `sexo` (FK): Clave foránea a `DimSexo`.
+    - `edad` (FK): Clave foránea a `DimEdad`.
+    - `nacionalidad` (FK): Clave foránea a `DimNacionalidad`.
+    - `tipo_paciente` (FK): Clave foránea a `DimTipoPaciente`.
+    - `tabaquismo` (FK): Clave foránea a `DimTobaco`.
+    - `indigena` (FK): Clave foránea a `DimIndigena`.
+    - `uci` (FK): Clave foránea a `DimUci`.
+  - **DimFecha:**
+    - `fecha` (PK): Clave primaria.
+  - **DimEntidadRes:**
+    - `entidad_res` (PK): Clave primaria.
+  - **DimMunicipioRes:**
+    - `municipio_res` (PK): Clave primaria.
+  - **DimSexo:**
+    - `sexo` (PK): Clave primaria.
+  - **DimEdad:**
+    - `edad` (PK): Clave primaria.
+  - **DimNacionalidad:**
+    - `nacionalidad` (PK): Clave primaria.
+  - **DimTipoPaciente:**
+    - `tipo_paciente` (PK): Clave primaria.
+  - **DimComorbilidades:**
+    - `comorbilidad` (PK): Clave primaria.
+  - **DimClasificacionFinal:**
+    - `clasificacion_final` (PK): Clave primaria.
+  - **DimResultadosLab:**
+    - `resultado_lab` (PK): Clave primaria.
+  - **DimResultadosAntigeno:**
+    - `resultado_antigeno` (PK): Clave primaria.
+  - **DimTobaco:**
+    - `tabaquismo` (PK): Clave primaria.
+  - **DimIndigena:**
+    - `indigena` (PK): Clave primaria.
+  - **DimUci:**
+    - `uci` (PK): Clave primaria.
+
+- **Jerarquías de Tiempo y Espacio:**
+  - **Tiempo:** Años (2022, 2023).
+  - **Espacio:** Entidad de residencia (por estado o municipio), municipio de residencia.
+  - **Niveles de Detalle:** A nivel de individuo (id_registro) y a nivel agregado (contados, promedios).
+
+### 5. ETL y Manejo de Registros Parciales
+
+- **Proceso ETL:**
+  - **Extracción:** Extraer datos desde el archivo de origen (cargar los datos en un esquema temporal).
+  - **Transformación:**
+    - **Llenado de Valores Nulos:** Llenar campos como `municipio_res`, `entidad_res`, `fecha_resultado` con valores de default o valores apropiados.
+    - **Validación de Datos:** Validar datos y corregir errores (como municipios no especificados).
+  - **Carga:** Cargar los datos transformados en las tablas de hechos y dimensiones.
+
+- **Manejo de Registros Parciales:**
+  - **Registro de Municipios No Especificados:** Mantener registros de municipios no especificados en una tabla temporal o en un campo adicional para futuras investigaciones.
+  - **Registro (08, 113):** Mantener registros con pares (08, 113) en una tabla temporal para futuras investigaciones y validaciones.
+
+### 6. Controles de Calidad y Pregunta Multidimensional
+
+- **Controles de Calidad:**
+  - **Consistencia de Datos:** Verificar que los datos sean coherentes y no contengan inconsistencias.
+  - **Completeness:** Verificar que todos los campos relevantes tengan valores.
+  - **Uniqueness:** Verificar la unicidad de los identificadores de registro.
+  - **Validation:** Validar que los datos sean válidos según el esquema definido.
+
+- **Pregunta Multidimensional:**
+  - **Pregunta:** ¿Cuál es la evolución temporal de la clasificación final (confirmados, sospechosos, etc.) por entidad de residencia y tipo de paciente en 2022 y 2023?
+  - **Dimensión Temporal:** Año (2022, 2023).
+  - **Dimensión Espacial:** Entidad de residencia.
+  - **Dimensión de Clasificación Final:** Clasificación final del caso.
+  - **Dimensión de Tipo Paciente:** Tipo de paciente.
+
+Esta pregunta permite una visión de la evolución de la clasificación final y el tipo de paciente en distintos estados, proporcionando información valiosa sobre la evolución de la pandemia.

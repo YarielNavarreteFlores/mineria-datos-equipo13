@@ -1,0 +1,34 @@
+﻿ 1. Para este proyecto, elegí una constelación como mi modelo multidimensional debido a que representa un conjunto de objetos en el cielo que se encuentran estrechamente relacionados, similar a cómo están las diferentes dimensiones de la tabla covid_historica del Equipo 13.
+
+2. Una fila de hechos representa una observación individual de un caso de COVID-19. Las medidas usadas son todas las columnas de la tabla covid_historica, salvo localidad_res. Para distinguir un registro de vigilancia de un caso confirmado, puede hacerlo comparando el resultado_lab o resultado_antigeno con los valores positivos.
+
+3. Aquí hay un modelo de tabla de origen y destino que cubre las 46 columnas:
+
+```sql
+COVID_HISTORICA (id_registro, fecha_actualizacion, origen, sector, entidad_um, municipio_um, clues, sexo, entidad_nac, entidad_res, pais_nacionalidad, pais_origen, entidad_um, tipo_paciente, fecha_ingreso, fecha_sintomas, fecha_def, intubado, neumonia, edad, nacionalidad, embarazo, habla_lengua_indig, indigena, diabetes, epoc, asma, inmusupr, hipertension, otra_com, cardiovascular, obesidad, renal_cronica, tabaquismo, otro_caso, toma_muestra_lab, resultado_lab, toma_muestra_antigeno, resultado_antigeno, clasificacion_final, uci, anio_fuente, archivo_fuente)
+PRIMARY KEY (id_registro);
+FOREIGN KEY (entidad_um, municipio_um) REFERENCES ENTIDADES_MUNICIPIOS(id_entidad, id_municipio);
+FOREIGN KEY (entidad_nac) REFERENCES ENTIDADES(id_entidad);
+FOREIGN KEY (entidad_res) REFERENCES ENTIDADES(id_entidad);
+FOREIGN KEY (pais_nacionalidad) REFERENCES PAIS(id_pais);
+FOREIGN KEY (pais_origen) REFERENCES PAIS(id_pais);
+```
+
+4. Las tablas incluyen: COVID_HISTORICA, ENTIDADES, ENTIDADES_MUNICIPIOS y PAIS. La clave primaria de COVID_HISTORICA es id_registro. Las claves foráneas son entidad_um, municipio_um, entidad_nac, entidad_res, pais_nacionalidad y pais_origen. Las relaciones se definen por las referencias a otras tablas. La redundancia se puede encontrar en los campos entidad_um y entidad_res, ya que ambos están relacionados con la tabla ENTIDADES.
+
+El modelo jerárquico de tiempo y espacio se define por los niveles de agrupación temporal (anio_fuente) y espacial (entidad_um y municipio_um). El detalle más profundo es el nivel de registros individuales.
+
+5. El ETL se puede organizar en tres etapas:
+   - Limpieza de datos: identificar y corregir o eliminar los valores incorrectos o nulos.
+   - Normalización: agrupar los datos en tablas y estructuras más pequeñas y organizadas.
+   - Integración: combinar las tablas y estructuras en un solo modelo multidimensional.
+   - Mantener los registros con información parcial, como los 26 municipios no especificados y la pareja (08, 113), se puede hacer mediante el uso de valores "NO ESPECIFICADO" en estos campos.
+
+6. Los controles de calidad podrían incluir:
+   - Validación de datos: verificar que los valores ingresados sean consistentes y correctos.
+   - Lógica de negocio: asegurarse de que las reglas empresariales y de los datos sean aplicadas correctamente.
+   - Controles de inconsistencia: detectar y corregir errores de información duplicada o inconsistente.
+
+Una pregunta que cruce tres dimensiones podría ser: ¿Cuántos casos de COVID-19 confirmados se han registrado por cada municipio en Chihuahua entre los años 2022 y 2023?
+
+7. Las conclusiones verificables incluyen datos estructurados y verificables sobre los casos de COVID-19. Las hipótesis pendientes incluyen investigar posibles causas y efectos de la pandemia y buscar nuevas maneras de prevenir y controlarla.

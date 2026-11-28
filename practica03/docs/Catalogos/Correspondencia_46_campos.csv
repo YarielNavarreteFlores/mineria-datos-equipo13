@@ -1,0 +1,47 @@
+﻿columna_origen,tabla_destino,atributo_o_rol,tratamiento
+id_registro,fact_registro_covid,id_registro,Incluir
+fecha_actualizacion,dim_fecha,id_fecha_actualizacion → dim_fecha.fecha,Incluir
+fecha_ingreso,dim_fecha,id_fecha_ingreso → dim_fecha.fecha,Incluir
+fecha_sintomas,dim_fecha,id_fecha_sintomas → dim_fecha.fecha,Incluir
+fecha_def,dim_fecha,id_fecha_def → dim_fecha.fecha,Incluir
+fecha_resultado,dim_fecha,id_fecha_resultado → dim_fecha.fecha,Incluir
+entidad_res,dim_residencia,entidad_res,Incluir
+municipio_res,dim_residencia,municipio_res,Incluir
+entidad_um,dim_unidad_medica,entidad_um,Incluir
+municipio_um,dim_unidad_medica,municipio_um,Incluir
+clues,dim_unidad_medica,clues,Incluir
+sector,dim_unidad_medica,sector,Incluir
+origen,dim_unidad_medica,origen,Incluir
+sexo,dim_perfil_demografico,sexo,Incluir
+edad,dim_perfil_demografico,edad,Incluir
+entidad_nac,dim_perfil_demografico,entidad_nac,Incluir
+nacionalidad,dim_perfil_demografico,nacionalidad,Incluir
+embarazo,dim_perfil_demografico,embarazo,Incluir
+habla_lengua_indig,dim_perfil_demografico,habla_lengua_indig,Incluir
+indigena,dim_perfil_demografico,indigena,Incluir
+migrante,dim_perfil_demografico,migrante,Incluir
+pais_nacionalidad,dim_perfil_demografico,pais_nacionalidad,Incluir
+pais_origen,dim_perfil_demografico,pais_origen,Incluir
+diabetes,dim_comorbilidad,diabetes,Incluir
+epoc,dim_comorbilidad,epoc,Incluir
+asma,dim_comorbilidad,asma,Incluir
+inmusupr,dim_comorbilidad,inmusupr,Incluir
+hipertension,dim_comorbilidad,hipertension,Incluir
+otra_com,dim_comorbilidad,otra_com,Incluir
+cardiovascular,dim_comorbilidad,cardiovascular,Incluir
+obesidad,dim_comorbilidad,obesidad,Incluir
+renal_cronica,dim_comorbilidad,renal_cronica,Incluir
+tabaquismo,dim_comorbilidad,tabaquismo,Incluir
+tipo_paciente,dim_atencion_clinica,tipo_paciente,Incluir
+intubado,dim_atencion_clinica,intubado,Incluir
+neumonia,dim_atencion_clinica,neumonia,Incluir
+uci,dim_atencion_clinica,uci,Incluir
+otro_caso,dim_diagnostico,otro_caso,Incluir
+toma_muestra_lab,dim_diagnostico,toma_muestra_lab,Incluir
+resultado_lab,dim_diagnostico,resultado_lab,Incluir
+toma_muestra_antigeno,dim_diagnostico,toma_muestra_antigeno,Incluir
+resultado_antigeno,dim_diagnostico,resultado_antigeno,Incluir
+clasificacion_final,dim_diagnostico,clasificacion_final,Incluir
+anio_fuente,dim_fuente,anio_fuente,Conservar procedencia
+archivo_fuente,dim_fuente,archivo_fuente,Conservar procedencia
+localidad_res,Excluida,,Excluir por consigna

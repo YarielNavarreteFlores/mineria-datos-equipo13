@@ -1,0 +1,19 @@
+ESCOM · Minería de Datos · Equipo 13 · Práctica 3
+Guía para revisar o reproducir el trabajo
+
+La entrada es public.covid_historica en la base covid20a23sedi, con las 46 columnas de la Práctica 2. Para leer los resultados de la ejecución original, abra el PDF y las carpetas Evidencias y Resultados. Las consultas de lectura se pueden ejecutar sobre la estrella ya poblada.
+
+Instalación en una base de reproducción con la tabla histórica preparada y el esquema p3_covid todavía sin crear (PostgreSQL 18, DBeaver). Ejecutar cada script completo en este orden:
+1. P3_08 crea las nueve tablas y sus restricciones. La creación del esquema protege una instalación existente.
+2. P3_09 carga la procedencia y las fechas observadas.
+3. P3_10 carga residencia. Incluye 36 claves de entidad y 2,501 parejas de municipio y entidad del Excel entregado.
+4. P3_11 carga y concilia las cinco dimensiones temáticas restantes.
+5. P3_12 resuelve las claves, carga los hechos y concilia por año.
+6. P3_13 reproduce la exploración a tres niveles. Comparar con exploracion_202611271803.csv.
+7. P3_14_16 reproduce las consultas de calidad y la distribución de edad, e incluye controles adicionales de solo lectura.
+
+P3_08, P3_11 y P3_12 se recuperaron de los scripts de la práctica. P3_09, P3_10 y las consultas analíticas se incluyen en versión de reproducción documentada. Las capturas y los CSV corresponden a las ejecuciones en la instalación del equipo. Los identificadores sustitutos pueden variar en una nueva instalación. Comparar claves naturales, frecuencias y totales.
+
+Control de referencia: 1,999,998 hechos de la fuente 2022 y 99,999 de la fuente 2023; una unidad de medida por hecho. Los CSV de niveles 1D, 2D y 3D agrupan la misma muestra. Cada nivel se concilia por separado.
+
+Carpetas: SQL (scripts), Catalogos (documentación del profesor y correspondencia), Consultas_LLM (prompt, fichas y respuestas), Evidencias (capturas), Resultados (CSV) y Figuras (PNG). La fecha de portada es la indicada para la entrega. Las fichas y capturas conservan la fecha real de ejecución.
